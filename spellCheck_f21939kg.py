@@ -30,7 +30,7 @@ def spellchecker(dictionary, input_name, output_name):
         
     out = open(output_name, "a")
     out.write(
-        f'Formatting ###################\nNumber of upper case words transformed: {str(len(upper))}\nNumber of punctuation’s removed: {str(len(punc))}\nNumber of numbers removed: {str(len(nos))}\nSpellchecking ###################\nNumber of words in file: {str(len(words))}\nNumber of correct words in file: {str(correct)}\nNumber of incorrect words in file: {str(incorrect)}')
+        f'f21939kg\nFormatting ###################\nNumber of upper case words transformed: {str(len(upper))}\nNumber of punctuation’s removed: {str(len(punc))}\nNumber of numbers removed: {str(len(nos))}\nSpellchecking ###################\nNumber of words in file: {str(len(words))}\nNumber of correct words in file: {str(correct)}\nNumber of incorrect words in file: {str(incorrect)}')
     out.close()
 
 if __name__ == '__main__':
