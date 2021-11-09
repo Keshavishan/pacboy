@@ -1,23 +1,9 @@
+import os
 import argparse
 
-def getScore(score):
-    if score == "t":
-        return 5
-    elif score == "c":
-        return 2
-    else:
-        return 3
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('input_file_path', type=str, help='Path of input file')
-    parser.add_argument('output_file_path', type=str,
-                        help='Path of output file')
-
-    args = parser.parse_args()
-
-    inputFile = open(args.__dict__['input_file_path'], "r")
+def decrypt(input_name, output_name):
+    inputFile = open(input_name, "r")
     input = inputFile.readline()
 
     encoding = input.split(":")
@@ -36,13 +22,86 @@ if __name__ == '__main__':
                 decrypted_string += c
     else:
         dict = {
-            '.-': 'a', '-...': 'b', '-.-.': 'c', '-..': 'd', '.': 'e', '..-.': 'f', '--.': 'g', '....': 'h', '..': 'i', '.---': 'j', '-.-': 'k', '.-..': 'l', '--': 'm', '-.': 'n', '---': 'o', '.--.': 'p', '--.-': 'q', '.-.': 'r', '...': 's', '-': 't', '..-': 'u', '...-': 'v', '.--': 'w', '-..-': 'x', '-.--': 'y', '--..': 'z', '.-.-.-': '.', '..--..': '?', '--..--': ',', '/': ' '
+            '.-': 'a',
+            '-...': 'b',
+            '-.-.': 'c',
+            '-..': 'd',
+            '.': 'e',
+            '..-.': 'f',
+            '--.': 'g',
+            '....': 'h',
+            '..': 'i',
+            '.---': 'j',
+            '-.-': 'k',
+            '.-..': 'l',
+            '--': 'm',
+            '-.': 'n',
+            '---': 'o',
+            '.--.': 'p',
+            '--.-': 'q',
+            '.-.': 'r',
+            '...': 's',
+            '-': 't',
+            '..-': 'u',
+            '...-': 'v',
+            '.--': 'w',
+            '-..-': 'x',
+            '-.--': 'y',
+            '--..': 'z',
+            '.-.-.-': '.',
+            '..--..': '?',
+            '--..--': ',',
+            '/': ' ',
+            '-.-.--': '!',
+            '---...': ':',
+            '_._._.': ';',
+            '_...._': '-',
+            '-.--.': '(',
+            '-.--.-': ')',
+            '.-..-.': '"',
+            '.----.': "'",
+            '-----': '0',
+            '.----': '1',
+            '..---': '2',
+            '...--': '3',
+            '....-': '4',
+            '.....': '5',
+            '-....': '6',
+            '--...': '7',
+            '---..': '8',
+            '----.': '9'
         }
 
         for c in encoding[1].split(" "):
             if c in dict:
                 decrypted_string += dict[c]
 
-    out = open(args.__dict__['output_file_path'], "a")
-    out.write(decrypted_string)
+    out = open(output_name, "a")
+    out.write(decrypted_string.lower())
     out.close()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('input_folder', type=str, help='Path of input folder')
+    parser.add_argument('output_folder', type=str,
+                        help='Path of output folder')
+
+    args = parser.parse_args()
+
+    inputPath = args.__dict__['input_folder']
+    outPath = args.__dict__['output_folder']
+
+    input_files = []
+
+    for entry in os.listdir(inputPath):
+        if os.path.isfile(os.path.join(inputPath, entry)):
+            input_files.append(os.path.join(inputPath, entry))
+
+    if not os.path.exists(outPath):
+            os.makedirs(outPath)
+            
+    for file in input_files:
+        basename = os.path.basename(file)
+        f = os.path.splitext(basename)
+        
+        decrypt(file, os.path.join(outPath, f[0] + "_f21939kg" + f[1]))
