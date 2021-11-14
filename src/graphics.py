@@ -6,9 +6,9 @@ class Graphics():
         loc = os.getcwd()
 
         if loc.split('/')[-1] == "src":
-            img_dir = f'../images'
+            img_dir = f'../assets'
         else:
-            img_dir = f'{loc}/images'
+            img_dir = f'{loc}/assets'
 
         self.graphics = {}
 
