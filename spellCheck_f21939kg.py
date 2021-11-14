@@ -1,6 +1,5 @@
 import os
 import argparse
-from enum import Flag
 import re
 
 def spellchecker(dictionary, input_name, output_name):
@@ -8,11 +7,16 @@ def spellchecker(dictionary, input_name, output_name):
     sentences = inputFile.readlines()
     sentence = "".join(sentences)
 
+    all_punc = "[.?!,:;\-\(\)\[\]\{\}'\"]"
+
+    ellipsis = re.findall("\.{3}", sentence)
+    sentence = re.sub("\.{3}", "", sentence)
+
     nos = re.findall("\d", sentence)
-    punc = re.findall("[^a-zA-Z\d\s]", sentence)
+    punc = re.findall(all_punc, sentence)
     upper = re.findall("[A-Z]", sentence)
 
-    sentence = re.sub("[^a-zA-Z\s]", "", sentence)
+    sentence = re.sub("[.?!,:;\-\(\)\[\]\{\}'\"\d]", "", sentence)
     sentence = sentence.lower()
     sentence = ' '.join(sentence.split())
 
@@ -29,7 +33,7 @@ def spellchecker(dictionary, input_name, output_name):
         
     out = open(output_name, "a")
     out.write(
-        f'f21939kg\nFormatting ###################\nNumber of upper case letters changed: {str(len(upper))}\nNumber of punctuations removed: {str(len(punc))}\nNumber of numbers removed: {str(len(nos))}\nSpellchecking ###################\nNumber of words: {str(len(words))}\nNumber of correct words: {str(correct)}\nNumber of incorrect words: {str(incorrect)}')
+        f'f21939kg\nFormatting ###################\nNumber of upper case letters changed: {str(len(upper))}\nNumber of punctuations removed: {str(len(punc) + len(ellipsis))}\nNumber of numbers removed: {str(len(nos))}\nSpellchecking ###################\nNumber of words: {str(len(words))}\nNumber of correct words: {str(correct)}\nNumber of incorrect words: {str(incorrect)}')
     out.close()
 
 if __name__ == '__main__':
