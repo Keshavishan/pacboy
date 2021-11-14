@@ -8,7 +8,6 @@ def spellchecker(dictionary, input_name, output_name):
     sentences = inputFile.readlines()
     sentence = "".join(sentences)
 
-
     nos = re.findall("\d", sentence)
     punc = re.findall("[^a-zA-Z\d\s]", sentence)
     upper = re.findall("[A-Z]", sentence)
@@ -30,7 +29,7 @@ def spellchecker(dictionary, input_name, output_name):
         
     out = open(output_name, "a")
     out.write(
-        f'f21939kg\nFormatting ###################\nNumber of upper case words transformed: {str(len(upper))}\nNumber of punctuation’s removed: {str(len(punc))}\nNumber of numbers removed: {str(len(nos))}\nSpellchecking ###################\nNumber of words in file: {str(len(words))}\nNumber of correct words in file: {str(correct)}\nNumber of incorrect words in file: {str(incorrect)}')
+        f'f21939kg\nFormatting ###################\nNumber of upper case letters changed: {str(len(upper))}\nNumber of punctuations removed: {str(len(punc))}\nNumber of numbers removed: {str(len(nos))}\nSpellchecking ###################\nNumber of words: {str(len(words))}\nNumber of correct words: {str(correct)}\nNumber of incorrect words: {str(incorrect)}')
     out.close()
 
 if __name__ == '__main__':
