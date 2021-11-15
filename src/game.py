@@ -1,6 +1,7 @@
 import tkinter as tk
 from graphics import Graphics
 from maze import Maze
+from wall import Wall
 
 class Game():
     def __init__(self, root: tk.Tk, width, height, graphics: Graphics, backFn):
@@ -28,14 +29,35 @@ class Game():
         self.game = Maze(graphics)
         self.game.new_level()
 
-    
-    def pause_game(self, event):
-        self.pause = not self.pause
-
     def key_bindings(self, enabled: bool):
         if enabled:
             self.root.bind('<Escape>', self.pause_game)
             self.root.bind('<space>', self.pause_game)
+    
+    def draw_maze(self) -> None:
+        height = self.height / self.game.m_height
+        width = self.width / self.game.m_width
+
+        for obj in self.game.objects:
+            if type(obj) == Wall:
+                self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1) * width, (obj.y * height / height + 1) * height, fill = 'blue', width=0)
+    
+    def refresh_board(self):
+        self.current.delete(tk.ALL)
+        self.draw_maze()
+    
+    def countdown(self):
+        def number(image):
+            self.refresh_board()
+            self.current.create_image(self.width / 2, self.height / 2,
+                                                  image = self.graphics.get(image) )
+        
+        self.root.after(100, lambda: number('three'))
+        self.root.after(700, lambda: number('two'))
+        self.root.after(1300, lambda: number('one'))
+
+    def pause_game(self, event):
+        self.pause = not self.pause
 
     def check_pause(self) -> None:
         if self.pause:
@@ -59,4 +81,5 @@ class Game():
             self.check_pause()
 
     def run(self):
+        self.countdown()
         self.root.after(500, self.update)

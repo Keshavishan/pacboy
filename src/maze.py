@@ -44,6 +44,7 @@ class Maze():
           [0] + listmaker(1, 26) + [0],
           listmaker(0, 28)]
 
+        self.m_height, self.m_width = len(mapping), len(mapping[0])
         maze = []
 
         for i in range(len(mapping)):
@@ -63,11 +64,7 @@ class Maze():
         self.update_maze()
 
     def update_maze(self):
-        # self.game_objects = { objs for rows in self.state for objs in rows if objs is not None }
-
         for rows in self.state:
             for objs in rows:
                 if objs != None:
                     self.objects.add(objs)
-
-        print(self.objects)
