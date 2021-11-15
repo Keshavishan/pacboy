@@ -9,7 +9,7 @@ class Pacman():
         self.graphics = graphics
         self.direction_image(graphics)
 
-        self.last_direction, self.next_direction = 'Left', None
+        self.last_direction, self.next_direction = 'West', None
 
     def change_direction(self, direction):
         self.last_direction = self.direction
