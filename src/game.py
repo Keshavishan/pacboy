@@ -1,6 +1,7 @@
 import tkinter as tk
 from graphics import Graphics
 from maze import Maze
+from pacman import Pacman
 from wall import Wall
 
 class Game():
@@ -41,6 +42,8 @@ class Game():
         for obj in self.game.objects:
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1) * width, (obj.y * height / height + 1) * height, fill = 'blue', width=0)
+            elif type(obj) == Pacman:
+                self.current.create_image( obj.x * width + (width / 2), obj.y * height + (height / 2), image = obj.avatar)
     
     def refresh_board(self):
         self.current.delete(tk.ALL)
