@@ -26,6 +26,7 @@ class Game():
         self.pause = False
 
         self.game = Maze(graphics)
+        self.game.new_level()
 
     
     def pause_game(self, event):
