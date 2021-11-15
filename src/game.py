@@ -1,5 +1,6 @@
 import tkinter as tk
 from dot import Dot
+from enemy import Enemy
 from graphics import Graphics
 from maze import Maze
 from pacman import Pacman
@@ -43,7 +44,7 @@ class Game():
         for obj in self.game.objects:
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1) * width, (obj.y * height / height + 1) * height, fill = 'dark blue', width=0)
-            elif type(obj) == Pacman or type(obj) == Dot:
+            elif type(obj) == Pacman or type(obj) == Dot or type(obj) == Enemy:
                 self.current.create_image( obj.x * width + (width / 2), obj.y * height + (height / 2), image = obj.avatar)
     
     def refresh_board(self):
@@ -79,10 +80,19 @@ class Game():
         button1.configure(width = 10, activebackground = "#33B5E5", relief = tk.FLAT)
         self.current.create_window(10, 10, anchor=tk.NW, window=button1)
 
-    def update(self) -> None:
+    def update(self):
         if self.pause:
             self.paused_screen()
             self.check_pause()
+
+        else:
+            pass
+            # self.game.update_directions()
+            # self.game.update_board()
+            # self._check_for_completion()
+
+            # if not self.board.game_over:
+            #     self._adjust_board()
 
     def run(self):
         self.countdown()

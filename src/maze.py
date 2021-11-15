@@ -1,4 +1,5 @@
 from dot import Dot
+from enemy import Enemy
 from graphics import Graphics
 from helper import listmaker
 from pacman import Pacman
@@ -29,7 +30,7 @@ class Maze():
             [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, 0, 0, 0, 0, None, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, None, None, None, None, None, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],
             [None, None, None, None, None, None, 2, 0, 0, None, 0, None, None, None, None, None, None, 0, None, 0, 0, 2, None, None, None, None, None, None],
-            [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, 5, 6, 7, 8, None, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, 4, 5, 6, 7, None, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],
             [None, None, None, None, None, 0, 2, 0, 0, None, 0, 0, 0, 0, 0, 0, 0, 0, None, 0, 0, 2, 0, None, None, None, None],
             [None, None, None, None, None, 0, 2, 0, 0, None, None, None, None, None, None, None, None, None, None, 0, 0, 2, 0, None, None, None, None, None],
             [None, None, None, None, None, 0, 2, 0, 0, None, 0, 0, 0, 0, 0, 0, 0, 0, None, 0, 0, 2, 0, None, None, None, None, None],
@@ -64,6 +65,9 @@ class Maze():
 
                 elif mapping[i][j] == Dot.boostUpId:
                     row.append( Dot(j, i, self.graphics, True) )
+                
+                elif mapping[i][j] == Enemy.inky[0] or mapping[i][j] == Enemy.blinky[0] or mapping[i][j] == Enemy.pinky[0] or mapping[i][j] == Enemy.clyde[0]:
+                    row.append( Enemy(j, i, mapping[i][j], self.graphics) )
 
                 else:
                     row.append( None )
