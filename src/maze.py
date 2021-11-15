@@ -10,10 +10,8 @@ class Maze():
         self.enemies, self.game_objects  = set(), set()
         self.game_over = False
 
-        self.maze = self.return_maze()
-
-    def return_maze():
-        return [ listmaker(0, 28),
+    def new_level(self):
+        maze = [ listmaker(0, 28),
           ([0] + listmaker(1, 12) + [0]) * 2,
           [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
           [0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 0],
@@ -45,5 +43,3 @@ class Maze():
           [0] + listmaker(1, 26) + [0],
           listmaker(0, 28)]
     
-    def position_objects(self):
-        print()
