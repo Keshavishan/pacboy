@@ -29,7 +29,7 @@ class Home():
     
     def start_game(self):
         self.frame.destroy()
-        game = Game(self.root, self.width, self.height, self.graphics, lambda: self.create_frame())
+        game = Game(self.root, self.width, self.height, self.graphics, self.create_frame)
         game.run()
 
     def leaderboard(self):

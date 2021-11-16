@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter.constants import CENTER
 from boost import Boost
 from dot import Dot
 from enemies import *
@@ -8,13 +9,14 @@ from pacman import Pacman
 from wall import Wall
 
 class Game():
-    def __init__(self, root: tk.Tk, width, height, graphics: Graphics, backFn):
+    def __init__(self, root: tk.Tk, width, height, graphics: Graphics, create_frame):
         self.root = root
         self.width = 1000
         self.height = 850
         self.graphics = graphics
+        self.create_frame = create_frame
 
-        self.backFn = backFn
+        self.username = ""
 
         self.current = tk.Canvas(root, width=width, height=height, background="black")
         self.current.grid(row=0,column=0, sticky=tk.N)
@@ -75,11 +77,17 @@ class Game():
 
     def exit(self):
         self.current.destroy()
-        self.backFn()
-    
+        self.points.destroy()
+        self.level.destroy()
+        self.no_lives.destroy()
+
+        self.create_frame()
+           
     def update(self):
         if self.pause:
             self.current.create_image(self.width / 2, self.height / 2, image = self.graphics.get('boss' if self.interupt == "b" else 'paused') )
+            button = tk.Button(self.current, image=self.graphics.get('back'), command=self.exit)
+            button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
             self.check_pause()
 
         else:
@@ -128,6 +136,15 @@ class Game():
             self.root.bind('w', self.change_direction)
             self.root.bind('s', self.change_direction)
 
+    # def check_user():
+        
+        
+    def user(self):
+        input = tk.Entry(self.current, textvariable="Player name", background="white", fg="black")
+        input.place(x=((self.width - input.winfo_reqwidth())/2), y=self.height/2)
+        button = tk.Button()
+    
     def run(self):
+        # self.user()
         self.countdown()
         self.root.after(2000, self.update)

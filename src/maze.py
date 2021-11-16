@@ -112,7 +112,7 @@ class Maze():
             self.pacman.collision(self.state[y][x])
 
         if not self.game_over:
-            self.jh_update_previous_board_square(self.pacman)
+            self._update_previous_board_square(self.pacman)
             self.state[y][x] = self.pacman
 
         else:
