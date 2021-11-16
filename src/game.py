@@ -72,10 +72,9 @@ class Game():
         self.current.destroy()
         self.backFn()
     
-    
     def update(self):
         if self.pause:
-            self.current.create_image(self.width / 2, self.height / 2, image = self.graphics.get("boss" if self.interupt == "b" else 'paused') )
+            self.current.create_image(self.width / 2, self.height / 2, image = self.graphics.get('boss' if self.interupt == "b" else 'paused') )
             self.check_pause()
 
         else:
@@ -113,8 +112,6 @@ class Game():
             self.root.bind('<Right>', self.pacmans_direction)
             self.root.bind('<Up>', self.pacmans_direction)
             self.root.bind('<Down>', self.pacmans_direction)
-            self.root.bind('<Down>', self.pacmans_direction)
-
 
     def run(self):
         self.countdown()
