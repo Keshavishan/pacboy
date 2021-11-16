@@ -48,6 +48,8 @@ class Game():
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1) * width, (obj.y * height / height + 1) * height, fill = 'dark blue', width=0)
             elif type(obj) in [Pacman, Dot, Boost, Inky, Pinky, Blinky, Clyde]:
+                if(obj.x == 11 and obj.y == 23):
+                    print(type(obj))
                 self.current.create_image( obj.x * width + (width / 2), obj.y * height + (height / 2), image = obj.avatar)
     
     def refresh_maze(self):

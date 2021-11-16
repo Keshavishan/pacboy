@@ -13,9 +13,9 @@ class Maze():
         self.m_width, self.m_height, self.state, self.pacman = None, None, None, None
         self.enemies, self.objects  = set(), set()
         self.game_over = False
-
+   
     def new_level(self):
-        mapping = mapping = [ listmaker(0, 28),
+        mapping = [ listmaker(0, 28),
             ([0] + listmaker(2, 12) + [0]) * 2,
             [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],
             [0, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0],
@@ -96,13 +96,15 @@ class Maze():
                     self.state[previous_y][previous_x] = None
 
     def update_maze(self):
+        objects = set()
         for rows in self.state:
             for objs in rows:
-                if objs != None:
-                    self.objects.add(objs)
+                if objs is not None:
+                    objects.add(objs)
+        
+        self.objects = objects
 
         self.pacman = self.pacman_location()
-
         y, x = self.pacman.curr_location()
         if (y == 14 and x == 0) or (y == 14 and x == 27):
             self.pacman.teleport()
@@ -144,9 +146,6 @@ class Maze():
             self.pacman.run()
 
     def validate_upcoming_movement(self):
-        ''' This function handles the case where Pacman has an upcoming direction
-            queue'd up. If so, validates the next direction, and the direction
-            settings and image are changed accordingly. '''
         if self.pacman.next_direction is not None:
             if self.can_change_direction(self.pacman.next_direction):
                 self.pacman.change_direction(self.pacman.next_direction)
