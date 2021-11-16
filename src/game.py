@@ -135,16 +135,20 @@ class Game():
             self.root.bind('d', self.change_direction)
             self.root.bind('w', self.change_direction)
             self.root.bind('s', self.change_direction)
+    
+    # def set_user(self, input):
+    #     print(input)
 
-    # def check_user():
-        
-        
-    def user(self):
-        input = tk.Entry(self.current, textvariable="Player name", background="white", fg="black")
-        input.place(x=((self.width - input.winfo_reqwidth())/2), y=self.height/2)
-        button = tk.Button()
+    # def user(self):
+    #     self.current.delete(tk.ALL)
+    #     input = tk.Entry(self.current, textvariable="Player name", background="white", fg="black")
+    #     input.place(x=((self.width - input.winfo_reqwidth())/2), y=self.height/2)
+    #     button = tk.Button(self.current, textvariable="Submit", fg="blue")
+    #     print(input.winfo_height())
+    #     button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + input.winfo_height() + 10)
     
     def run(self):
-        # self.user()
+        # self.root.after(100, self.user)
         self.countdown()
         self.root.after(2000, self.update)
+        
