@@ -79,10 +79,6 @@ class Maze():
         self.update_maze()
 
     def _update_previous_board_square(self, game_object):
-        ''' Updates the previous board square that the game object was in. This only occurs after
-            the game object has actually moved ( meaning after first update ). This function avoids
-            there being multiple duplicates of the game object on the board, since it replaces the
-            last location with None. '''
         if game_object.last is not None:
             if (game_object.y, game_object.x) != game_object.last:
                 previous_y, previous_x = game_object.last
