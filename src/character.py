@@ -17,3 +17,17 @@ class Character():
 
     def invulnerability(self) -> None:
         self.invulnerable = not self.invulnerable
+
+    def run(self):
+        print(self.direction)
+        if self.direction == 'North':
+            self.y -= self.speed
+
+        elif self.direction == 'East':
+            self.x += self.speed
+            
+        elif self.direction == 'South':
+            self.y += self.speed
+            
+        elif self.direction == 'West':
+            self.x -= self.speed

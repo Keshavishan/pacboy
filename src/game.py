@@ -28,12 +28,14 @@ class Game():
 
         self.key_bindings(True)
         self.pause = False
+        self.interupt = None
 
         self.game = Maze(graphics)
         self.game.new_level()
     
-    def pause_game(self, event):
+    def pause_game(self, event: tk.Event):
         self.pause = not self.pause
+        self.interupt = event.keysym
     
     def draw_maze(self) -> None:
         height = self.height / self.game.m_height
@@ -69,24 +71,50 @@ class Game():
     def exit(self):
         self.current.destroy()
         self.backFn()
-        
+    
+    
     def update(self):
         if self.pause:
-            self.current.create_image(self.width / 2, self.height / 2, image = self.graphics.get('paused') )
+            self.current.create_image(self.width / 2, self.height / 2, image = self.graphics.get("boss" if self.interupt == "b" else 'paused') )
             self.check_pause()
 
         else:
             self.game.update_directions()
-            # self.game.update_board()
+            self.game.update_maze()
             self.root.after(125, self.update)
 
             if not self.game.game_over:
                 self.refresh_maze()
     
+    def pacmans_direction(self, event: tk.Event):
+        try:
+            # self.game.pacman.change_direction(event.keysym)
+            if self.game.can_change_direction(event.keysym):
+                print("can")
+            else:
+                print("cant")
+            # if not self.game.can_change_direction( event.keysym ):
+            #     self.game.pacman.next_direction = event.keysym
+            #     self.board.pacman.direction = self.board.pacman.last_direction
+
+            # else:
+            #     self.board.pacman.direction_image( self._images )
+            #     self.board.pacman.next_direction = None
+
+        except AttributeError:
+            pass
+
     def key_bindings(self, enabled: bool):
         if enabled:
             self.root.bind('<Escape>', self.pause_game)
             self.root.bind('<space>', self.pause_game)
+            self.root.bind('b', self.pause_game)
+            self.root.bind('<Left>', self.pacmans_direction)
+            self.root.bind('<Right>', self.pacmans_direction)
+            self.root.bind('<Up>', self.pacmans_direction)
+            self.root.bind('<Down>', self.pacmans_direction)
+            self.root.bind('<Down>', self.pacmans_direction)
+
 
     def run(self):
         self.countdown()

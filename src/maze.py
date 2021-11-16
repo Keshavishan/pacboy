@@ -78,8 +78,57 @@ class Maze():
 
         self.update_maze()
 
+    def _update_previous_board_square(self, game_object):
+        ''' Updates the previous board square that the game object was in. This only occurs after
+            the game object has actually moved ( meaning after first update ). This function avoids
+            there being multiple duplicates of the game object on the board, since it replaces the
+            last location with None. '''
+        if game_object.last is not None:
+            if (game_object.y, game_object.x) != game_object.last:
+                previous_y, previous_x = game_object.last
+
+                if type(self.state[previous_y][previous_x]) == None:
+                    self.state[previous_y][previous_x] = None
+
     def update_maze(self):
         for rows in self.state:
             for objs in rows:
                 if objs != None:
                     self.objects.add(objs)
+
+        self.pacman = self.pacman_location()
+
+        y, x = self.pacman.curr_location()
+        if (y == 14 and x == 0) or (y == 14 and x == 27):
+            self.pacman.teleport()
+            self.state[self.pacman.y][self.pacman.x] = self.pacman
+
+        if not self.game_over:
+            self._update_previous_board_square(self.pacman)
+            self.state[y][x] = self.pacman
+
+        else:
+            self.state[y][x] = None
+
+    def pacman_location(self) -> Pacman:
+        for obj in self.objects:
+            if type(obj) == Pacman:
+                return obj
+    
+    def can_change_direction(self, direction):
+        y, x = self.pacman.curr_location()
+
+        if direction == 'Down':
+            return type(self.state[y + 1][x]) != Wall and (y + 1, x) not in Maze.restricted_area
+
+        elif direction == 'Up':
+            return type(self.state[y - 1][x]) != Wall
+
+        else:
+            return type(self.state[y][x - 1 if direction == "Left" else x + 1]) != Wall
+
+    def update_directions(self):
+        self.pacman.last = self.pacman.curr_location()
+
+        if self.can_change_direction( self.pacman.direction ):
+            self.pacman.run()
