@@ -9,7 +9,7 @@ class Pacman(Character):
         Character.__init__(self, x, y, direction)
 
         self.graphics = graphics
-        self.direction_image(graphics)
+        self.image(graphics)
 
         self.last_direction, self.next_direction = 'West', None
 
@@ -17,7 +17,7 @@ class Pacman(Character):
         self.last_direction = self.direction
         self.direction = direction
 
-    def direction_image(self, graphics: Graphics):
+    def image(self, graphics: Graphics):
         self.avatar = graphics.get(f'pacman_{self.direction[0].lower()}' )
 
     def curr_location(self):

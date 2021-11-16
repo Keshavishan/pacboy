@@ -85,20 +85,21 @@ class Game():
             if not self.game.game_over:
                 self.refresh_maze()
     
-    def pacmans_direction(self, event: tk.Event):
+    def change_direction(self, event: tk.Event):
+        mapping = {
+            "Up": "North",
+            "Down": "South",
+            "Left": "West",
+            "Right": "East"
+        }
+
         try:
-            # self.game.pacman.change_direction(event.keysym)
-            if self.game.can_change_direction(event.keysym):
-                print("can")
+            self.game.pacman.change_direction(mapping[event.keysym])
+            if self.game.can_change_direction(mapping[event.keysym]):
+               self.game.pacman.image(self.graphics)
+               self.game.pacman.next_direction = None
             else:
                 print("cant")
-            # if not self.game.can_change_direction( event.keysym ):
-            #     self.game.pacman.next_direction = event.keysym
-            #     self.board.pacman.direction = self.board.pacman.last_direction
-
-            # else:
-            #     self.board.pacman.direction_image( self._images )
-            #     self.board.pacman.next_direction = None
 
         except AttributeError:
             pass
@@ -108,10 +109,10 @@ class Game():
             self.root.bind('<Escape>', self.pause_game)
             self.root.bind('<space>', self.pause_game)
             self.root.bind('b', self.pause_game)
-            self.root.bind('<Left>', self.pacmans_direction)
-            self.root.bind('<Right>', self.pacmans_direction)
-            self.root.bind('<Up>', self.pacmans_direction)
-            self.root.bind('<Down>', self.pacmans_direction)
+            self.root.bind('<Left>', self.change_direction)
+            self.root.bind('<Right>', self.change_direction)
+            self.root.bind('<Up>', self.change_direction)
+            self.root.bind('<Down>', self.change_direction)
 
     def run(self):
         self.countdown()

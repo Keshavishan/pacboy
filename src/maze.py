@@ -117,15 +117,15 @@ class Maze():
     
     def can_change_direction(self, direction):
         y, x = self.pacman.curr_location()
-
-        if direction == 'Down':
+        print(type(self.state[y][x - 1]))
+        if direction == 'South':
             return type(self.state[y + 1][x]) != Wall and (y + 1, x) not in Maze.restricted_area
 
-        elif direction == 'Up':
+        elif direction == 'North':
             return type(self.state[y - 1][x]) != Wall
 
         else:
-            return type(self.state[y][x - 1 if direction == "Left" else x + 1]) != Wall
+            return type(self.state[y][x - 1 if direction == "West" else x + 1]) != Wall
 
     def update_directions(self):
         self.pacman.last = self.pacman.curr_location()
