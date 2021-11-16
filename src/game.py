@@ -1,7 +1,7 @@
 import tkinter as tk
 from boost import Boost
 from dot import Dot
-from enemy import Enemy
+from enemies import *
 from graphics import Graphics
 from maze import Maze
 from pacman import Pacman
@@ -45,12 +45,16 @@ class Game():
         for obj in self.game.objects:
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1) * width, (obj.y * height / height + 1) * height, fill = 'dark blue', width=0)
-            elif type(obj) in [Pacman, Dot, Enemy, Boost]:
+            elif type(obj) in [Pacman, Dot, Boost, Inky, Pinky, Blinky, Clyde]:
                 self.current.create_image( obj.x * width + (width / 2), obj.y * height + (height / 2), image = obj.avatar)
     
     def refresh_maze(self):
         self.current.delete(tk.ALL)
         self.draw_maze()
+        self.no_lives['text'] = f'Lives: {self.game.pacman.lives}'
+        self.level['text'] = f'Level: {self.game.pacman.level}'
+        self.points['text'] = f'Points: {self.game.pacman.points}'
+
     
     def countdown(self):
         def number(image):
@@ -91,13 +95,17 @@ class Game():
             "Up": "North",
             "Down": "South",
             "Left": "West",
-            "Right": "East"
+            "Right": "East",
+            "w": "North",
+            "s": "South",
+            "a": "West",
+            "d": "East",
         }
         direction = mapping[event.keysym]
         try:
             self.game.pacman.change_direction(direction)
             if self.game.can_change_direction(direction):
-               self.game.pacman.image(self.graphics)
+               self.game.pacman.set_avatar(self.graphics)
                self.game.pacman.next_direction = None
             else:
                 self.game.pacman.next_direction = direction
@@ -115,6 +123,10 @@ class Game():
             self.root.bind('<Right>', self.change_direction)
             self.root.bind('<Up>', self.change_direction)
             self.root.bind('<Down>', self.change_direction)
+            self.root.bind('a', self.change_direction)
+            self.root.bind('d', self.change_direction)
+            self.root.bind('w', self.change_direction)
+            self.root.bind('s', self.change_direction)
 
     def run(self):
         self.countdown()

@@ -1,6 +1,6 @@
 from boost import Boost
 from dot import Dot
-from enemy import Enemy
+from enemies import *
 from graphics import Graphics
 from helper import listmaker
 from pacman import Pacman
@@ -8,7 +8,6 @@ from wall import Wall
 
 class Maze():
     restricted_area = [(13,11), (13,16)]
-
     def __init__(self, graphics: Graphics):
         self.graphics = graphics
         self.m_width, self.m_height, self.state, self.pacman = None, None, None, None
@@ -56,7 +55,7 @@ class Maze():
             row = []
             for j in range(len(mapping[i])):
                 if mapping[i][j] == Wall.id:
-                    row.append( Wall(j, i) )
+                    row.append( Wall(j, i, self.graphics) )
 
                 elif mapping[i][j] == Pacman.id:
                     row.append( Pacman(j, i, self.graphics) )
@@ -67,8 +66,18 @@ class Maze():
                 elif mapping[i][j] == Boost.id:
                     row.append(Boost(j, i, self.graphics))
                 
-                elif mapping[i][j] == Enemy.inky[0] or mapping[i][j] == Enemy.blinky[0] or mapping[i][j] == Enemy.pinky[0] or mapping[i][j] == Enemy.clyde[0]:
-                    row.append(Enemy(j, i, mapping[i][j], self.graphics))
+                elif mapping[i][j] == Inky.id:
+                    row.append(Inky(j, i, self.graphics))
+
+                elif mapping[i][j] == Blinky.id:
+                    row.append(Blinky(j, i, self.graphics))
+
+                elif mapping[i][j] == Pinky.id:
+                    row.append(Pinky(j, i, self.graphics))
+
+                elif mapping[i][j] == Clyde.id:
+                    row.append(Clyde(j, i, self.graphics))
+
                 else:
                     row.append(None)
 
@@ -100,10 +109,10 @@ class Maze():
             self.state[self.pacman.y][self.pacman.x] = self.pacman
 
         else:
-            self.pacman.contact(self.state[y][x])
+            self.pacman.collision(self.state[y][x])
 
         if not self.game_over:
-            self._update_previous_board_square(self.pacman)
+            self.jh_update_previous_board_square(self.pacman)
             self.state[y][x] = self.pacman
 
         else:
@@ -127,7 +136,19 @@ class Maze():
             return type(self.state[y][x - 1 if direction == "West" else x + 1]) != Wall
 
     def update_directions(self):
+        self.validate_upcoming_movement()
+
         self.pacman.last = self.pacman.curr_location()
 
         if self.can_change_direction(self.pacman.direction):
             self.pacman.run()
+
+    def validate_upcoming_movement(self):
+        ''' This function handles the case where Pacman has an upcoming direction
+            queue'd up. If so, validates the next direction, and the direction
+            settings and image are changed accordingly. '''
+        if self.pacman.next_direction is not None:
+            if self.can_change_direction(self.pacman.next_direction):
+                self.pacman.change_direction(self.pacman.next_direction)
+                self.pacman.next_direction = None
+                self.pacman.set_avatar(self.graphics)
