@@ -1,3 +1,4 @@
+from boost import Boost
 from dot import Dot
 from enemy import Enemy
 from graphics import Graphics
@@ -63,14 +64,13 @@ class Maze():
                 elif mapping[i][j] == Dot.id:
                     row.append( Dot(j, i, self.graphics) )
 
-                elif mapping[i][j] == Dot.boostUpId:
-                    row.append( Dot(j, i, self.graphics, True) )
+                elif mapping[i][j] == Boost.id:
+                    row.append(Boost(j, i, self.graphics))
                 
                 elif mapping[i][j] == Enemy.inky[0] or mapping[i][j] == Enemy.blinky[0] or mapping[i][j] == Enemy.pinky[0] or mapping[i][j] == Enemy.clyde[0]:
-                    row.append( Enemy(j, i, mapping[i][j], self.graphics) )
-
+                    row.append(Enemy(j, i, mapping[i][j], self.graphics))
                 else:
-                    row.append( None )
+                    row.append(None)
 
             maze.append(row)
 
@@ -103,6 +103,9 @@ class Maze():
             self.pacman.teleport()
             self.state[self.pacman.y][self.pacman.x] = self.pacman
 
+        else:
+            self.pacman.contact(self.state[y][x])
+
         if not self.game_over:
             self._update_previous_board_square(self.pacman)
             self.state[y][x] = self.pacman
@@ -117,7 +120,7 @@ class Maze():
     
     def can_change_direction(self, direction):
         y, x = self.pacman.curr_location()
-        print(type(self.state[y][x - 1]))
+
         if direction == 'South':
             return type(self.state[y + 1][x]) != Wall and (y + 1, x) not in Maze.restricted_area
 
@@ -130,5 +133,5 @@ class Maze():
     def update_directions(self):
         self.pacman.last = self.pacman.curr_location()
 
-        if self.can_change_direction( self.pacman.direction ):
+        if self.can_change_direction(self.pacman.direction):
             self.pacman.run()

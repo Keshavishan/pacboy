@@ -19,7 +19,6 @@ class Character():
         self.invulnerable = not self.invulnerable
 
     def run(self):
-        print(self.direction)
         if self.direction == 'North':
             self.y -= self.speed
 

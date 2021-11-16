@@ -1,4 +1,5 @@
 import tkinter as tk
+from boost import Boost
 from dot import Dot
 from enemy import Enemy
 from graphics import Graphics
@@ -44,7 +45,7 @@ class Game():
         for obj in self.game.objects:
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1) * width, (obj.y * height / height + 1) * height, fill = 'dark blue', width=0)
-            elif type(obj) == Pacman or type(obj) == Dot or type(obj) == Enemy:
+            elif type(obj) in [Pacman, Dot, Enemy, Boost]:
                 self.current.create_image( obj.x * width + (width / 2), obj.y * height + (height / 2), image = obj.avatar)
     
     def refresh_maze(self):
@@ -92,14 +93,15 @@ class Game():
             "Left": "West",
             "Right": "East"
         }
-
+        direction = mapping[event.keysym]
         try:
-            self.game.pacman.change_direction(mapping[event.keysym])
-            if self.game.can_change_direction(mapping[event.keysym]):
+            self.game.pacman.change_direction(direction)
+            if self.game.can_change_direction(direction):
                self.game.pacman.image(self.graphics)
                self.game.pacman.next_direction = None
             else:
-                print("cant")
+                self.game.pacman.next_direction = direction
+                self.game.pacman.direction = self.game.pacman.last_direction
 
         except AttributeError:
             pass
