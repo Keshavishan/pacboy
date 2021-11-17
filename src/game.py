@@ -159,13 +159,7 @@ class Game():
             # self.root.bind('<Down>', self.change_direction)
         else:
             for key in keys:
-                self.root.unbind_all()
-            # self.root.unbind('<space>')
-            # self.root.unbind('b')
-            # self.root.unbind('<Left>')
-            # self.root.unbind('<Right>')
-            # self.root.unbind('<Up>')
-            # self.root.unbind('<Down>')
+                self.root.unbind(key)
         
     
     # def set_user(self, input):
