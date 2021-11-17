@@ -5,6 +5,7 @@ from graphics import Graphics
 
 class Pacman(Character):
     id = 1
+    boostTime = 45
 
     def __init__(self, x, y, graphics: Graphics, direction = 'West'):
         Character.__init__(self, x, y, direction)
@@ -16,6 +17,7 @@ class Pacman(Character):
         self.set_avatar(graphics)
 
         self.last_direction, self.next_direction = 'West', None
+        self.boostTime = 45
 
     def change_direction(self, direction):
         self.last_direction = self.direction
@@ -33,8 +35,17 @@ class Pacman(Character):
         else:
             self.update_position(0, 14)
 
+    def decrease_boost(self):
+        print(self.boostTime)
+        self.boostTime -= 1
+
     def collision(self, collisionWith):
         if type(collisionWith) == Dot:
             self.points += 10
         elif type(collisionWith) == Boost:
             self.points += 50
+
+            if not self.invulnerable:
+                self.invulnerable = not self.invulnerable
+            else:
+                self.boostTime = self.boostTime + Pacman.boostTime

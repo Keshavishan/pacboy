@@ -90,6 +90,7 @@ class Maze():
         self.update_maze()
 
         self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, level
+        self.ghosts = { e for e in self.objects if type(e) in ghosts }
 
         
     def stats(self) -> tuple:
@@ -124,6 +125,23 @@ class Maze():
 
         else:
             self.pacman.collision(self.state[y][x])
+
+        if self.pacman.invulnerable:
+            if self.pacman.boostTime == Pacman.boostTime:   # Pacman.ticks (50) indicates Pacman barley became invulnerable
+                for ghost in self.ghosts:
+                    ghost.invulnerable = True
+                    ghost.set_avatar(ghost.name, self.graphics)
+                self.pacman.decrease_boost()
+
+            elif self.pacman.boostTime == 0:  # Pacman runs out of his invulnerability so states are returned to normal
+                for ghost in self.ghosts:
+                    ghost.invulnerable = False
+                    ghost.set_avatar(ghost.name, self.graphics)
+                self.pacman.boostTime = Pacman.boostTime
+                self.pacman.invulnerable = not self.pacman.invulnerable
+            
+            else:
+                self.pacman.decrease_boost() 
 
         if not self.game_over:
             self._update_previous_board_square(self.pacman)

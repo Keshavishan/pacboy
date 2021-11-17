@@ -12,11 +12,8 @@ class Character():
     def update_position(self, x, y) -> None:
         self.x, self.y = x, y
     
-    def curr_loc(self) -> tuple:
+    def curr_loc(self):
         return self.x, self.y
-
-    def invulnerability(self) -> None:
-        self.invulnerable = not self.invulnerable
 
     def run(self):
         if self.direction == 'North':
