@@ -9,7 +9,6 @@ class Pacman(Character):
     def __init__(self, x, y, graphics: Graphics, direction = 'West'):
         Character.__init__(self, x, y, direction)
         self.points = 0
-        self.life_score = 0
         self.lives = 3
         self.level = 1
 

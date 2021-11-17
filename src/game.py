@@ -48,8 +48,6 @@ class Game():
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1) * width, (obj.y * height / height + 1) * height, fill = 'dark blue', width=0)
             elif type(obj) in [Pacman, Dot, Boost, Inky, Pinky, Blinky, Clyde]:
-                if(obj.x == 11 and obj.y == 23):
-                    print(type(obj))
                 self.current.create_image( obj.x * width + (width / 2), obj.y * height + (height / 2), image = obj.avatar)
     
     def refresh_maze(self):
@@ -84,18 +82,40 @@ class Game():
         self.no_lives.destroy()
 
         self.create_frame()
+
+    def show_image_screen(self, image):
+        self.current.create_image( self.width / 2, self.height / 2, image = self.graphics.get(image) )
+
+    def to_next_level(self):
+        self.game.new_level()
+        self.key_bindings(True)
+    
+    def handle_next_level(self):
+        self.current.delete(tk.ALL)
+        self.show_image_screen("loading")
+        self.root.after(3500, self.to_next_level)
            
     def update(self):
         if self.pause:
-            self.current.create_image(self.width / 2, self.height / 2, image = self.graphics.get('boss' if self.interupt == "b" else 'paused') )
-            button = tk.Button(self.current, image=self.graphics.get('back'), command=self.exit)
-            button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
+            self.show_image_screen('boss' if self.interupt == "b" else 'paused')
+            # button = tk.Button(self.current, image=self.graphics.get('back'), command=self.exit)
+            # button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
             self.check_pause()
 
         else:
             self.game.update_directions()
             self.game.update_maze()
-            self.root.after(125, self.update)
+            
+            total_pickups = { p for p in self.game.objects if type(p) in [Dot, Boost] }
+            
+            if len(total_pickups) == 0:
+                self.game.pacman.direction = None
+                self.key_bindings(False)
+                self.root.after(750, self.handle_next_level)
+                self.current.after(5000, self.run)
+
+            else:
+                self.current.after(125, self.update)
 
             if not self.game.game_over:
                 self.refresh_maze()
@@ -137,6 +157,19 @@ class Game():
             self.root.bind('d', self.change_direction)
             self.root.bind('w', self.change_direction)
             self.root.bind('s', self.change_direction)
+        else:
+            self.root.unbind('<Escape>')
+            self.root.unbind('<space>')
+            self.root.unbind('b')
+            self.root.unbind('<Left>')
+            self.root.unbind('<Right>')
+            self.root.unbind('<Up>')
+            self.root.unbind('<Down>')
+            self.root.unbind('a')
+            self.root.unbind('d')
+            self.root.unbind('w')
+            self.root.unbind('s')
+        
     
     # def set_user(self, input):
     #     print(input)

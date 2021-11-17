@@ -7,14 +7,16 @@ from pacman import Pacman
 from wall import Wall
 
 class Maze():
-    restricted_area = [(13,11), (13,16)]
     def __init__(self, graphics: Graphics):
         self.graphics = graphics
         self.m_width, self.m_height, self.state, self.pacman = None, None, None, None
-        self.enemies, self.objects  = set(), set()
+        self.enemies, self.objects = set(), set()
         self.game_over = False
    
     def new_level(self):
+        points, lives, level = self.stats()
+        self.enemies, self.game_objects = set(), set()
+
         mapping = [ listmaker(0, 28),
             ([0] + listmaker(2, 12) + [0]) * 2,
             [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],
@@ -87,6 +89,16 @@ class Maze():
 
         self.update_maze()
 
+        self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, level
+
+        
+    def stats(self) -> tuple:
+        # Game has already started and is transitioning to a new level
+        if self.state is not None:
+            return self.pacman.points, self.pacman.lives, self.pacman.level + 1
+        else:
+            return 0, 3, 1
+
     def _update_previous_board_square(self, game_object):
         if game_object.last is not None:
             if (game_object.y, game_object.x) != game_object.last:
@@ -129,7 +141,7 @@ class Maze():
         y, x = self.pacman.curr_location()
 
         if direction == 'South':
-            return type(self.state[y + 1][x]) != Wall and (y + 1, x) not in Maze.restricted_area
+            return type(self.state[y + 1][x]) != Wall and (y + 1, x) not in [(13,11), (13,16)]
 
         elif direction == 'North':
             return type(self.state[y - 1][x]) != Wall
