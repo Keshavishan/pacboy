@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter.constants import CENTER
 from boost import Boost
 from dot import Dot
-from enemies import *
+from ghosts import *
 from graphics import Graphics
 from maze import Maze
 from pacman import Pacman

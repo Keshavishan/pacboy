@@ -1,6 +1,6 @@
 from boost import Boost
 from dot import Dot
-from enemies import *
+from ghosts import *
 from graphics import Graphics
 from helper import listmaker
 from pacman import Pacman
