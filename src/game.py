@@ -151,13 +151,6 @@ class Game():
         if enabled:
             for key in keys:
                 self.root.bind(key[0], key[1])
-            # self.root.bind('<space>', self.pause_game)
-            # self.root.bind('b', self.pause_game)
-            # self.root.bind('<Left>', self.change_direction)
-            # self.root.bind('<Right>', self.change_direction)
-            # self.root.bind('<Up>', self.change_direction)
-            # self.root.bind('<Down>', self.change_direction)
-        else:
             for key in keys:
                 self.root.unbind(key)
         
