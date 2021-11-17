@@ -69,10 +69,11 @@ class Game():
         self.root.after(1300, lambda: number('one'))
 
 
-    def check_pause(self) -> None:
+    def check_pause(self, button: tk.Button) -> None:
         if self.pause:
-            self.root.after(1, self.check_pause)
+            self.root.after(1, lambda: self.check_pause(button))
         else:
+            button.destroy()
             self.update()
 
     def exit(self):
@@ -98,9 +99,9 @@ class Game():
     def update(self):
         if self.pause:
             self.show_image_screen('boss' if self.interupt == "b" else 'paused')
-            # button = tk.Button(self.current, image=self.graphics.get('back'), command=self.exit)
-            # button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
-            self.check_pause()
+            button = tk.Button(self.current, image=self.graphics.get('back'), command=self.exit)
+            button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
+            self.check_pause(button)
 
         else:
             self.game.update_directions()
@@ -145,30 +146,26 @@ class Game():
             pass
 
     def key_bindings(self, enabled: bool):
+        keys = [('<space>', self.pause_game), ('b', self.pause_game), ('<Left>', self.change_direction), ('<Right>', self.change_direction), ('<Up>', self.change_direction), ('<Down>', self.change_direction)]
+
         if enabled:
-            self.root.bind('<Escape>', self.pause_game)
-            self.root.bind('<space>', self.pause_game)
-            self.root.bind('b', self.pause_game)
-            self.root.bind('<Left>', self.change_direction)
-            self.root.bind('<Right>', self.change_direction)
-            self.root.bind('<Up>', self.change_direction)
-            self.root.bind('<Down>', self.change_direction)
-            self.root.bind('a', self.change_direction)
-            self.root.bind('d', self.change_direction)
-            self.root.bind('w', self.change_direction)
-            self.root.bind('s', self.change_direction)
+            for key in keys:
+                self.root.bind(key[0], key[1])
+            # self.root.bind('<space>', self.pause_game)
+            # self.root.bind('b', self.pause_game)
+            # self.root.bind('<Left>', self.change_direction)
+            # self.root.bind('<Right>', self.change_direction)
+            # self.root.bind('<Up>', self.change_direction)
+            # self.root.bind('<Down>', self.change_direction)
         else:
-            self.root.unbind('<Escape>')
-            self.root.unbind('<space>')
-            self.root.unbind('b')
-            self.root.unbind('<Left>')
-            self.root.unbind('<Right>')
-            self.root.unbind('<Up>')
-            self.root.unbind('<Down>')
-            self.root.unbind('a')
-            self.root.unbind('d')
-            self.root.unbind('w')
-            self.root.unbind('s')
+            for key in keys:
+                self.root.unbind_all()
+            # self.root.unbind('<space>')
+            # self.root.unbind('b')
+            # self.root.unbind('<Left>')
+            # self.root.unbind('<Right>')
+            # self.root.unbind('<Up>')
+            # self.root.unbind('<Down>')
         
     
     # def set_user(self, input):
