@@ -36,7 +36,6 @@ class Pacman(Character):
             self.update_position(0, 14)
 
     def decrease_boost(self):
-        print(self.boostTime)
         self.boostTime -= 1
 
     def collision(self, collisionWith):
