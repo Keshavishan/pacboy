@@ -125,7 +125,7 @@ class Maze():
 
         else:
             self.pacman.collision(self.state[y][x])
-        
+        # Inky.mode
         if self.pacman.invulnerable:
             if self.pacman.boostTime == Pacman.boostTime:   # Pacman.ticks (50) indicates Pacman barley became invulnerable
                 for ghost in self.ghosts:
@@ -144,8 +144,11 @@ class Maze():
                 self.pacman.decrease_boost() 
 
         for ghost in self.ghosts:
-            pass
-            # ghost.determineDirection(self.state, self.pacman)
+            if ghost.mode == 1:
+                ghost.scatter(self.state, ghost.target)
+            # elif ghost.mode == 2:
+            #     self.chase()
+            # ghost.move(self.state, self.pacman)
             # self._validate_enemy_position(enemy, pacman_y, pacman_x)
 
         if not self.game_over:

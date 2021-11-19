@@ -19,9 +19,6 @@ class Home():
         try:
             dbfile = open(f'{self.loc}/gameplay.pickle', 'rb')
             self.gameplay = pickle.load(dbfile)
-            print(self.gameplay)
-            for keys in self.gameplay:
-                print(keys, '=>', self.gameplay[keys])
             dbfile.close()
         except:
              self.gameplay = {}
