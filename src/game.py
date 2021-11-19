@@ -7,16 +7,17 @@ from graphics import Graphics
 from maze import Maze
 from pacman import Pacman
 from wall import Wall
+import pickle
 
 class Game():
-    def __init__(self, root: tk.Tk, width, height, graphics: Graphics, create_frame):
+    def __init__(self, root: tk.Tk, user, width, height, graphics: Graphics, create_frame):
         self.root = root
         self.width = 1000
         self.height = 850
         self.graphics = graphics
         self.create_frame = create_frame
 
-        self.username = ""
+        self.user = user
 
         self.current = tk.Canvas(root, width=width, height=height, background="black")
         self.current.grid(row=0,column=0, sticky=tk.N)
@@ -153,18 +154,6 @@ class Game():
                 self.root.bind(key[0], key[1])
             for key in keys:
                 self.root.unbind(key)
-        
-    
-    # def set_user(self, input):
-    #     print(input)
-
-    # def user(self):
-    #     self.current.delete(tk.ALL)
-    #     input = tk.Entry(self.current, textvariable="Player name", background="white", fg="black")
-    #     input.place(x=((self.width - input.winfo_reqwidth())/2), y=self.height/2)
-    #     button = tk.Button(self.current, textvariable="Submit", fg="blue")
-    #     print(input.winfo_height())
-    #     button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + input.winfo_height() + 10)
     
     def run(self):
         # self.root.after(100, self.user)

@@ -6,7 +6,7 @@ class Ghost(Character):
         Character.__init__(self, x, y, direction)
         self.ghost = ghost
         self.slowed_down = False
-
+        self.i = 0
         self.set_avatar(ghost, graphics)
 
     def set_avatar(self, ghost, graphics: Graphics):

@@ -6,6 +6,8 @@ class Inky(Ghost):
     name = 'inky'
     def __init__(self, x, y, graphics: Graphics, direction=None):
         super().__init__(x, y, Inky.name, graphics, direction=direction)
+
+        self.i += 1
         
     def move(self):
         curr_pos = self.x, self.y
@@ -15,6 +17,8 @@ class Blinky(Ghost):
     name = 'blinky'
     def __init__(self, x, y, graphics: Graphics, direction=None):
         super().__init__(x, y, Blinky.name, graphics, direction=direction)
+
+        self.i += 1
     
     def move(self):
         curr_pos = self.x, self.y
@@ -24,6 +28,8 @@ class Pinky(Ghost):
     name = 'pinky'
     def __init__(self, x, y, graphics: Graphics, direction=None):
         super().__init__(x, y, Pinky.name, graphics, direction=direction)
+
+        self.i += 1
 
     def move(self):
         curr_pos = self.x, self.y
@@ -35,6 +41,7 @@ class Clyde(Ghost):
         super().__init__(x, y, Clyde.name, graphics, direction=direction)
 
     def move(self):
+        self.i += 1
         curr_pos = self.x, self.y
 
 
