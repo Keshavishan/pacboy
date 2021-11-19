@@ -10,7 +10,7 @@ class Maze():
     def __init__(self, graphics: Graphics):
         self.graphics = graphics
         self.m_width, self.m_height, self.state, self.pacman = None, None, None, None
-        self.enemies, self.objects = set(), set()
+        self.ghosts, self.objects = set(), set()
         self.game_over = False
    
     def new_level(self):
@@ -125,7 +125,7 @@ class Maze():
 
         else:
             self.pacman.collision(self.state[y][x])
-
+        
         if self.pacman.invulnerable:
             if self.pacman.boostTime == Pacman.boostTime:   # Pacman.ticks (50) indicates Pacman barley became invulnerable
                 for ghost in self.ghosts:
@@ -142,6 +142,11 @@ class Maze():
             
             else:
                 self.pacman.decrease_boost() 
+
+        for ghost in self.ghosts:
+            pass
+            # ghost.determineDirection(self.state, self.pacman)
+            # self._validate_enemy_position(enemy, pacman_y, pacman_x)
 
         if not self.game_over:
             self._update_previous_board_square(self.pacman)

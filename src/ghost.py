@@ -2,7 +2,7 @@ from character import Character
 from graphics import Graphics
 
 class Ghost(Character):
-    def __init__(self, x, y, ghost, graphics: Graphics, direction = None):
+    def __init__(self, x, y, ghost, graphics: Graphics, mode = "scatter", direction = None):
         Character.__init__(self, x, y, direction)
         self.ghost = ghost
         self.slowed_down = False
