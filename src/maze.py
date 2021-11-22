@@ -1,10 +1,10 @@
 from powerPellet import PowerPellet
 from dot import Dot
-from ghosts import *
 from graphics import Graphics
 from helper import listmaker
 from pacman import Pacman
 from wall import Wall
+import ghosts
 
 class Maze():
     def __init__(self, graphics: Graphics):
@@ -12,10 +12,11 @@ class Maze():
         self.m_width, self.m_height, self.state, self.pacman = None, None, None, None
         self.ghosts, self.objects = set(), set()
         self.game_over = False
+        self.update_counter = 0
    
     def new_level(self):
         points, lives, level = self.stats()
-        self.enemies, self.game_objects = set(), set()
+        self.ghosts, self.game_objects = set(), set()
 
         mapping = [ listmaker(0, 28),
             ([0] + listmaker(2, 12) + [0]) * 2,
@@ -68,17 +69,17 @@ class Maze():
                 elif mapping[i][j] == PowerPellet.id:
                     row.append(PowerPellet(j, i, self.graphics))
                 
-                elif mapping[i][j] == Inky.id:
-                    row.append(Inky(j, i, self.graphics))
+                # elif mapping[i][j] == ghosts.Inky.id:
+                #     row.append(ghosts.Inky(j, i, self.graphics))
 
-                elif mapping[i][j] == Blinky.id:
-                    row.append(Blinky(j, i, self.graphics))
+                elif mapping[i][j] == ghosts.Blinky.id:
+                    row.append(ghosts.Blinky(j, i, self.graphics))
 
-                elif mapping[i][j] == Pinky.id:
-                    row.append(Pinky(j, i, self.graphics))
+                # elif mapping[i][j] == ghosts.Pinky.id:
+                #     row.append(ghosts.Pinky(j, i, self.graphics))
 
-                elif mapping[i][j] == Clyde.id:
-                    row.append(Clyde(j, i, self.graphics))
+                # elif mapping[i][j] == ghosts.Clyde.id:
+                #     row.append(ghosts.Clyde(j, i, self.graphics))
 
                 else:
                     row.append(None)
@@ -89,7 +90,7 @@ class Maze():
         self.update_maze()
 
         self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, level
-        self.ghosts = { e for e in self.objects if type(e) in ghosts }
+        self.ghosts = { e for e in self.objects if type(e) in ghosts.ghosts }
 
         
     def stats(self) -> tuple:
@@ -108,6 +109,8 @@ class Maze():
                     self.state[previous_y][previous_x] = None
 
     def update_maze(self):
+        # self.update_counter += 1
+
         objects = set()
         for rows in self.state:
             for objs in rows:
@@ -124,15 +127,15 @@ class Maze():
 
         else:
             self.pacman.collision(self.state[y][x])
-        # Inky.mode
+
         if self.pacman.invulnerable:
-            if self.pacman.boostTime == Pacman.boostTime:   # Pacman.ticks (50) indicates Pacman barley became invulnerable
+            if self.pacman.boostTime == Pacman.boostTime:
                 for ghost in self.ghosts:
                     ghost.invulnerable = True
                     ghost.set_avatar(ghost.name, self.graphics)
                 self.pacman.decrease_boost()
 
-            elif self.pacman.boostTime == 0:  # Pacman runs out of his invulnerability so states are returned to normal
+            elif self.pacman.boostTime == 0:
                 for ghost in self.ghosts:
                     ghost.invulnerable = False
                     ghost.set_avatar(ghost.name, self.graphics)
@@ -143,7 +146,7 @@ class Maze():
                 self.pacman.decrease_boost() 
 
         for ghost in self.ghosts:
-            ghost.move(self.state, ghost.target)
+            ghost.move(self, self.pacman, self.update_counter)
 
         if not self.game_over:
             self._update_previous_board_square(self.pacman)

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter.constants import CENTER
 from powerPellet import PowerPellet
 from dot import Dot
-from ghosts import *
+from ghosts import Inky, Blinky, Pinky, Clyde, ghosts
 from graphics import Graphics
 from maze import Maze
 from pacman import Pacman
@@ -117,7 +117,7 @@ class Game():
             #     self.current.after(5000, self.run)
 
             # else:
-            self.current.after(125, self.update)
+            # self.current.after(125, self.update)
 
             if not self.game.game_over:
                 self.refresh_maze()
