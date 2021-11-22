@@ -99,9 +99,9 @@ class Game():
            
     def update(self):
         if self.pause:
-            # self.show_image_screen('boss' if self.interupt == "b" else 'paused')
+            self.show_image_screen('boss' if self.interupt == "b" else 'paused')
             button = tk.Button(self.current, image=self.graphics.get('back'), command=self.exit)
-            # button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
+            button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
             self.check_pause(button)
 
         else:
@@ -110,14 +110,14 @@ class Game():
             
             total_pickups = { p for p in self.game.objects if type(p) in [Dot, PowerPellet] }
             
-            # if len(total_pickups) == 0:
-            #     self.game.pacman.direction = None
-            #     self.key_bindings(False)
-            #     self.root.after(750, self.handle_next_level)
-            #     self.current.after(5000, self.run)
+            if len(total_pickups) == 0:
+                self.game.pacman.direction = None
+                self.key_bindings(False)
+                self.root.after(750, self.handle_next_level)
+                self.current.after(5000, self.run)
 
-            # else:
-            self.current.after(125, self.update)
+            else:
+                self.current.after(125, self.update)
 
             if not self.game.game_over:
                 self.refresh_maze()

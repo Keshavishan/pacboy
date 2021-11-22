@@ -6,6 +6,7 @@ from graphics import Graphics
 class Pacman(Character):
     id = 1
     boostTime = 45
+    name = "pacman"
 
     def __init__(self, x, y, graphics: Graphics, direction = 'West'):
         Character.__init__(self, x, y, direction)

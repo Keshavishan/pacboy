@@ -69,17 +69,17 @@ class Maze():
                 elif mapping[i][j] == PowerPellet.id:
                     row.append(PowerPellet(j, i, self.graphics))
                 
-                elif mapping[i][j] == ghosts.Inky.id:
-                    row.append(ghosts.Inky(j, i, self.graphics))
+                # elif mapping[i][j] == ghosts.Inky.id:
+                #     row.append(ghosts.Inky(j, i, self.graphics))
 
                 elif mapping[i][j] == ghosts.Blinky.id:
                     row.append(ghosts.Blinky(j, i, self.graphics))
 
-                elif mapping[i][j] == ghosts.Pinky.id:
-                    row.append(ghosts.Pinky(j, i, self.graphics))
+                # elif mapping[i][j] == ghosts.Pinky.id:
+                #     row.append(ghosts.Pinky(j, i, self.graphics))
 
-                elif mapping[i][j] == ghosts.Clyde.id:
-                    row.append(ghosts.Clyde(j, i, self.graphics))
+                # elif mapping[i][j] == ghosts.Clyde.id:
+                #     row.append(ghosts.Clyde(j, i, self.graphics))
 
                 else:
                     row.append(None)
@@ -109,7 +109,7 @@ class Maze():
                     self.state[previous_y][previous_x] = None
 
     def update_maze(self):
-        # self.update_counter += 1
+        self.update_counter += 1
 
         objects = set()
         for rows in self.state:
@@ -146,10 +146,9 @@ class Maze():
                 self.pacman.decrease_boost() 
 
         for ghost in self.ghosts:
-            ghost.move(self, self.pacman, self.update_counter)
+            ghost.update_mode(self.update_counter)
+            ghost.move(self, self.pacman)
             self._update_previous_board_square(ghost)
-            # if ghost.y > 29:
-            #     print(ghost.y)
             self.state[ghost.y][ghost.x] = ghost
 
         if not self.game_over:

@@ -10,10 +10,16 @@ class Inky(Ghost):
     def __init__(self, x, y, graphics: Graphics):
         super().__init__(x, y, Inky.name, graphics)
 
-    def move(self, maze, pacman, count):
-        # if not self.invulnerable:
-        #     if self.mode == 1:
-        self.scatter(maze, pacman, count, self.target)
+    def move(self, maze, pacman):
+        if not self.invulnerable:
+            if self.mode == 1:
+                self.scatter(maze, pacman, self.target)
+
+            elif self.mode == 2:
+                self.chase()
+
+    def chase(self):
+        print()
 
 class Blinky(Ghost):
     id = 5
@@ -23,9 +29,20 @@ class Blinky(Ghost):
     def __init__(self, x, y, graphics: Graphics):
         super().__init__(x, y, Blinky.name, graphics)
 
-    def move(self, maze, pacman, count):
-        print(maze.m_width, maze.m_height)
-        self.scatter(maze, pacman, count, self.target)
+    def move(self, maze, pacman):
+        if not self.invulnerable:
+            if self.mode == 1:
+                self.scatter(maze, pacman, self.target)
+
+            elif self.mode == 2:
+                self.chase(maze, pacman)
+
+    def chase(self, maze, pacman):
+        start = self.x, self.y
+        target = (pacman.x, pacman.y)
+        path = self.bfs(maze, start, target)
+
+        self.ghost_move(path, maze, target)
 
 class Pinky(Ghost):
     id = 6
@@ -35,8 +52,16 @@ class Pinky(Ghost):
     def __init__(self, x, y, graphics: Graphics):
         super().__init__(x, y, Pinky.name, graphics)
 
-    def move(self, maze, pacman, count):
-        self.scatter(maze, pacman, count, self.target)
+    def move(self, maze, pacman):
+        if not self.invulnerable:
+            if self.mode == 1:
+                self.scatter(maze, pacman, self.target)
+
+            elif self.mode == 2:
+                self.chase()
+
+    def chase(self):
+        print()
 
 class Clyde(Ghost):
     id = 7
@@ -46,8 +71,16 @@ class Clyde(Ghost):
     def __init__(self, x, y, graphics: Graphics):
         super().__init__(x, y, Clyde.name, graphics)
 
-    def move(self, maze, pacman, count):
-        self.scatter(maze, pacman, count, self.target)
+    def move(self, maze, pacman):
+        if not self.invulnerable:
+            if self.mode == 1:
+                self.scatter(maze, pacman, self.target)
+
+            elif self.mode == 2:
+                self.chase()
+
+    def chase(self):
+        print()
 
 
 

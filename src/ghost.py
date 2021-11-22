@@ -21,15 +21,16 @@ class Ghost(Character):
         else:
             self.avatar = graphics.get(ghost)
 
-    # def update_mode(self, count):
-    #     if not self.invulnerable:
-    #         no_seconds = count % 8
-    #         if no_seconds < 8 or no_seconds in range(27, 34) or no_seconds in range(54, 59) or no_seconds in range(79, 84):
-    #             self.mode = 1
-    #         else:
-    #             self.mode = 2
-    #     else:
-    #         self.mode = 3
+    def update_mode(self, count):
+        print("update_mode", self.invulnerable, count)
+        if not self.invulnerable:
+            no_seconds = (count * 125) / 1000
+            if no_seconds < 8 or no_seconds in range(27, 34) or no_seconds in range(54, 59) or no_seconds in range(79, 84):
+                self.mode = 1
+            else:
+                self.mode = 2
+        else:
+            self.mode = 3
     
     def _path_length(self, path) -> int:
         ''' This function is a helper function to avoid index errors depending on
@@ -41,30 +42,27 @@ class Ghost(Character):
         else:
             return 0
 
-    def scatter(self, maze, pacman, count, target):
+    def scatter(self, maze, pacman, target):
         start = self.x, self.y
 
         path = self.bfs(maze, start, target)
 
+        self.ghost_move(path, maze, target)
+
+    def ghost_move(self, path, maze, target):
         if path is not None and path != []:
             distance = 1 if len(path) > 1 else 0
-            try:
-                if self.y < path[distance][1]:
-                    self.direction = 'South'
+            if self.y < path[distance][1]:
+                self.direction = 'South'
 
-                elif self.y > path[distance][1]:
-                    self.direction = 'North'
+            elif self.y > path[distance][1]:
+                self.direction = 'North'
 
-                elif self.x < path[distance][0]:
-                    self.direction = 'East'
+            elif self.x < path[distance][0]:
+                self.direction = 'East'
 
-                elif self.x > path[distance][0]:
-                    self.direction = 'West'
-
-            except(Exception):
-                pass
-                # print(path)
-                # print(path[distance][1])
+            elif self.x > path[distance][0]:
+                self.direction = 'West'
 
             self.last = (self.y, self.x)
 
@@ -74,11 +72,8 @@ class Ghost(Character):
             possible_moves = self.possible_moves(maze)
 
             quickest_path = self.quickest_path(possible_moves, target)
-            print()
             self.last = (self.y, self.x)
             self.x, self.y, self.direction = quickest_path
-
-
     
     def possible_moves(self, maze):
         possible_moves = []
