@@ -3,7 +3,7 @@ from graphics import Graphics
 from dot import Dot
 from powerPellet import PowerPellet
 from pacman import Pacman
-from collections import deque
+from collections import deque as queue
 from maze import Maze
 from wall import Wall
 
@@ -41,61 +41,92 @@ class Ghost(Character):
         else:
             return 0
 
-    def scatter(self, maze, pacman, count, endpoint_y, endpoint_x):
+    def scatter(self, maze, pacman, count, target):
         start = self.x, self.y
 
-        path = self.bfs(maze, start, endpoint_y, endpoint_x)
+        path = self.bfs(maze, start, target)
 
-        print(path)
+        if path is not None and path != []:
+            distance = 1 if len(path) > 1 else 0
+            try:
+                if self.y < path[distance][1]:
+                    self.direction = 'South'
 
-        # if path is not None and path != []:
-        #     distance = 1 if len(path) else 0
+                elif self.y > path[distance][1]:
+                    self.direction = 'North'
 
-        #     if self.y < path[distance][1]:
-        #         self.direction = 'South'
+                elif self.x < path[distance][0]:
+                    self.direction = 'East'
 
-        #     elif self.y > path[distance][1]:
-        #         self.direction = 'North'
+                elif self.x > path[distance][0]:
+                    self.direction = 'West'
 
-        #     elif self.x < path[distance][0]:
-        #         self.direction = 'East'
+            except(Exception):
+                pass
+                # print(path)
+                # print(path[distance][1])
 
-        #     elif self.x > path[distance][0]:
-        #         self.direction = 'West'
+            self.last = (self.y, self.x)
 
-        #     self.last = (self.x, self.y)
+            self.run()
 
-        #     self.run()
+        else:
+            possible_moves = self.possible_moves(maze)
 
-
-
-    def bfs(self, maze: Maze, start, endpoint_y, endpoint_x):
-        print(endpoint_y, endpoint_x)
-        queue = deque([[start]])
-        seen = set([start])
-        gamestate = maze.state
+            quickest_path = self.quickest_path(possible_moves, target)
+            print()
+            self.last = (self.y, self.x)
+            self.x, self.y, self.direction = quickest_path
 
 
-        while queue:
-            path = queue.popleft()
+    
+    def possible_moves(self, maze):
+        possible_moves = []
+
+        def is_valid(object):
+            if (type(object) == Dot or object == None or type(object) == PowerPellet) or object.name == self.ghost:
+                return True
+            return False
+
+        if is_valid(maze.state[self.y - 1][self.x]) and self.direction != "South": # North
+            possible_moves.append((self.x, self.y - 1, "North"))
+        if is_valid(maze.state[self.y + 1][self.x]) and self.direction != "North": # South
+            possible_moves.append((self.x, self.y + 1, "South"))
+        if is_valid(maze.state[self.y][self.x + 1]) and self.direction != "West": # East
+            possible_moves.append((self.x + 1, self.y, "East"))
+        if is_valid(maze.state[self.y][self.x - 1]) and self.direction != "East": # West
+            possible_moves.append((self.x - 1, self.y, "West"))
+        return possible_moves
+
+    def quickest_path(self, possible_moves, target):
+        quickest_path = (1500, None)
+
+        for move in possible_moves:
+            distance = (move[0] - target[0]) ** 2 + (move[1] - target[1]) ** 2
+
+            if quickest_path[0] > distance:
+                quickest_path = (distance, move)
+
+
+        return quickest_path[1]
+
+
+
+    def bfs(self, maze: Maze, start, target):
+        q = queue([[start]])
+        visited = set([start])
+
+        while q:
+            path = q.popleft()
+
             x, y = path[-1]
 
-            if (y, x) == (endpoint_y, endpoint_x):
+            if (x, y) == target:
                 return path
 
-            for x2, y2 in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
-                if self.wanted_path_indexes(maze, gamestate, seen, x2, y2):
-                    queue.append(path + [(x2, y2)])
-                    # print(queue)
-                    seen.add((x2, y2))
-
-    def wanted_path_indexes(self, maze: Maze, gamestate, seen, x, y) -> bool:
-        ''' To be a wanted index, x and y have to be within the board boundaries.
-            The position of y, x on the board also can not be a wall, since we need
-            a valid path. And (x, y) can not be duplicated, so must not be in the set seen. '''
-        return 0 <= x < maze.m_width and \
-               0 <= y < maze.m_height and \
-               type(gamestate[y][x]) != Wall and \
-               (x, y) not in seen
+            for x1, y1 in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
+                if 1 <= x1 < maze.m_width and 1 <= y1 < maze.m_height and type(maze.state[y1][x1]) != Wall and (x1, y1) not in visited and (y1, x1) != self.last:
+                    q.append(path + [(x1, y1)])
+                    visited.add((x1, y1))
 
         

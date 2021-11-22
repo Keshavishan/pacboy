@@ -117,7 +117,7 @@ class Game():
             #     self.current.after(5000, self.run)
 
             # else:
-            # self.current.after(125, self.update)
+            self.current.after(125, self.update)
 
             if not self.game.game_over:
                 self.refresh_maze()
