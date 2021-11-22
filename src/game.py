@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter.constants import CENTER
-from boost import Boost
+from powerPellet import PowerPellet
 from dot import Dot
 from ghosts import *
 from graphics import Graphics
@@ -48,7 +48,7 @@ class Game():
         for obj in self.game.objects:
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1) * width, (obj.y * height / height + 1) * height, fill = 'dark blue', width=0)
-            elif type(obj) in [Pacman, Dot, Boost, Inky, Pinky, Blinky, Clyde]:
+            elif type(obj) in [Pacman, Dot, PowerPellet, Inky, Pinky, Blinky, Clyde]:
                 self.current.create_image( obj.x * width + (width / 2), obj.y * height + (height / 2), image = obj.avatar)
     
     def refresh_maze(self):
@@ -99,25 +99,25 @@ class Game():
            
     def update(self):
         if self.pause:
-            self.show_image_screen('boss' if self.interupt == "b" else 'paused')
+            # self.show_image_screen('boss' if self.interupt == "b" else 'paused')
             button = tk.Button(self.current, image=self.graphics.get('back'), command=self.exit)
-            button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
+            # button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
             self.check_pause(button)
 
         else:
             self.game.update_directions()
             self.game.update_maze()
             
-            total_pickups = { p for p in self.game.objects if type(p) in [Dot, Boost] }
+            total_pickups = { p for p in self.game.objects if type(p) in [Dot, PowerPellet] }
             
-            if len(total_pickups) == 0:
-                self.game.pacman.direction = None
-                self.key_bindings(False)
-                self.root.after(750, self.handle_next_level)
-                self.current.after(5000, self.run)
+            # if len(total_pickups) == 0:
+            #     self.game.pacman.direction = None
+            #     self.key_bindings(False)
+            #     self.root.after(750, self.handle_next_level)
+            #     self.current.after(5000, self.run)
 
-            else:
-                self.current.after(125, self.update)
+            # else:
+            self.current.after(125, self.update)
 
             if not self.game.game_over:
                 self.refresh_maze()

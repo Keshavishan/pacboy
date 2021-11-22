@@ -1,6 +1,6 @@
 from graphics import Graphics
 
-class Boost():
+class PowerPellet():
     id = 3
     
     def __init__(self, x, y, graphics: Graphics):

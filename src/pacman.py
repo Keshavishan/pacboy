@@ -1,4 +1,4 @@
-from boost import Boost
+from powerPellet import PowerPellet
 from character import Character
 from dot import Dot
 from graphics import Graphics
@@ -41,7 +41,7 @@ class Pacman(Character):
     def collision(self, collisionWith):
         if type(collisionWith) == Dot:
             self.points += 10
-        elif type(collisionWith) == Boost:
+        elif type(collisionWith) == PowerPellet:
             self.points += 50
 
             if not self.invulnerable:

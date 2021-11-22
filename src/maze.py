@@ -1,4 +1,4 @@
-from boost import Boost
+from powerPellet import PowerPellet
 from dot import Dot
 from ghosts import *
 from graphics import Graphics
@@ -65,8 +65,8 @@ class Maze():
                 elif mapping[i][j] == Dot.id:
                     row.append( Dot(j, i, self.graphics) )
 
-                elif mapping[i][j] == Boost.id:
-                    row.append(Boost(j, i, self.graphics))
+                elif mapping[i][j] == PowerPellet.id:
+                    row.append(PowerPellet(j, i, self.graphics))
                 
                 elif mapping[i][j] == Inky.id:
                     row.append(Inky(j, i, self.graphics))
@@ -84,9 +84,8 @@ class Maze():
                     row.append(None)
 
             maze.append(row)
-
+        
         self.state = maze
-
         self.update_maze()
 
         self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, level
@@ -144,12 +143,7 @@ class Maze():
                 self.pacman.decrease_boost() 
 
         for ghost in self.ghosts:
-            if ghost.mode == 1:
-                ghost.scatter(self.state, ghost.target)
-            # elif ghost.mode == 2:
-            #     self.chase()
-            # ghost.move(self.state, self.pacman)
-            # self._validate_enemy_position(enemy, pacman_y, pacman_x)
+            ghost.move(self.state, ghost.target)
 
         if not self.game_over:
             self._update_previous_board_square(self.pacman)
