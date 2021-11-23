@@ -13,7 +13,7 @@ class Inky(Ghost):
     def move(self, maze, pacman):
         if not self.invulnerable:
             if self.mode == 1:
-                self.scatter(maze, pacman, self.target)
+                self.scatter(maze, self.target)
 
             elif self.mode == 2:
                 self.chase()
@@ -31,11 +31,11 @@ class Blinky(Ghost):
 
     def move(self, maze, pacman):
         if not self.invulnerable:
-            if self.mode == 1:
-                self.scatter(maze, pacman, self.target)
+            # if self.mode == 1:
+            #     self.scatter(maze, self.target)
 
-            elif self.mode == 2:
-                self.chase(maze, pacman)
+            # elif self.mode == 2:
+            self.chase(maze, pacman)
 
     def chase(self, maze, pacman):
         start = self.x, self.y
@@ -55,7 +55,7 @@ class Pinky(Ghost):
     def move(self, maze, pacman):
         if not self.invulnerable:
             if self.mode == 1:
-                self.scatter(maze, pacman, self.target)
+                self.scatter(maze, self.target)
 
             elif self.mode == 2:
                 self.chase()
@@ -74,7 +74,7 @@ class Clyde(Ghost):
     def move(self, maze, pacman):
         if not self.invulnerable:
             if self.mode == 1:
-                self.scatter(maze, pacman, self.target)
+                self.scatter(maze, self.target)
 
             elif self.mode == 2:
                 self.chase()

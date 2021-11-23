@@ -120,7 +120,7 @@ class Maze():
         self.objects = objects
 
         self.pacman = self.pacman_location()
-        y, x = self.pacman.curr_location()
+        y, x = self.pacman.curr_loc()
         if (y == 14 and x == 0) or (y == 14 and x == 27):
             self.pacman.teleport()
             self.state[self.pacman.y][self.pacman.x] = self.pacman
@@ -221,7 +221,7 @@ class Maze():
                 return obj
     
     def can_change_direction(self, direction):
-        y, x = self.pacman.curr_location()
+        y, x = self.pacman.curr_loc()
 
         if direction == 'South':
             return type(self.state[y + 1][x]) != Wall and (y + 1, x) not in [(13,11), (13,16)]
@@ -235,7 +235,7 @@ class Maze():
     def update_directions(self):
         self.validate_upcoming_movement()
 
-        self.pacman.last = self.pacman.curr_location()
+        self.pacman.last = self.pacman.curr_loc()
 
         if self.can_change_direction(self.pacman.direction):
             self.pacman.run()

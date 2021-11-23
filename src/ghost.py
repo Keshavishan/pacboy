@@ -23,7 +23,6 @@ class Ghost(Character):
             self.avatar = graphics.get(ghost)
 
     def update_mode(self, count):
-        print("update_mode", self.invulnerable, count)
         if not self.invulnerable:
             no_seconds = (count * 125) / 1000
             if no_seconds < 2 or no_seconds in range(27, 34) or no_seconds in range(54, 59) or no_seconds in range(79, 84):
@@ -32,14 +31,8 @@ class Ghost(Character):
                 self.mode = 2
         else:
             self.mode = 3
-    
-    def _path_length(self, path) -> int:
-        if len(path) > 1:
-            return 1
-        else:
-            return 0
 
-    def scatter(self, maze, pacman, target):
+    def scatter(self, maze, target):
         start = self.x, self.y
 
         path = self.bfs(maze, start, target)
@@ -101,9 +94,7 @@ class Ghost(Character):
 
 
         return quickest_path[1]
-
-
-
+        
     def bfs(self, maze: Maze, start, target):
         q = queue([[start]])
         visited = set([start])
@@ -117,7 +108,7 @@ class Ghost(Character):
                 return path
 
             for x1, y1 in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
-                if 1 <= x1 < maze.m_width and 1 <= y1 < maze.m_height and type(maze.state[y1][x1]) != Wall and (x1, y1) not in visited and (y1, x1) != self.last:
+                if 1 <= x1 < maze.m_width and 1 <= y1 < maze.m_height and type(maze.state[y1][x1]) != Wall and (x1, y1) not in visited:
                     q.append(path + [(x1, y1)])
                     visited.add((x1, y1))
 

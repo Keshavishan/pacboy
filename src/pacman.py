@@ -32,9 +32,6 @@ class Pacman(Character):
     def set_avatar(self, graphics: Graphics):
         self.avatar = graphics.get(f'pacman_{self.direction[0].lower()}' )
 
-    def curr_location(self):
-        return self.y, self.x
-
     def teleport(self):
         if self.direction == 'West':
             self.update_position(27, 14)
@@ -46,8 +43,10 @@ class Pacman(Character):
 
     def collision(self, collisionWith):
         if type(collisionWith) == Pellet:
+            print(collisionWith.x, collisionWith.y, collisionWith)
             self.points += 10
         elif type(collisionWith) == PowerPellet:
+            print(collisionWith.x, collisionWith.y, collisionWith)
             self.points += 50
 
             if not self.invulnerable:

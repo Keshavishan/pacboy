@@ -102,7 +102,6 @@ class Game():
         self.countdown()
         self.root.after(2100, self.update)
 
-    
     def update(self):
         if self.pause:
             self.show_image_screen('boss' if self.interupt == "b" else 'paused')

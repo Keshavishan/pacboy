@@ -13,7 +13,7 @@ class Character():
         self.x, self.y = x, y
     
     def curr_loc(self):
-        return self.x, self.y
+        return self.y, self.x
 
     def run(self):
         if self.direction == 'North':
