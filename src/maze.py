@@ -120,14 +120,28 @@ class Maze():
         self.objects = objects
 
         self.pacman = self.pacman_location()
+        print(self.pacman)
+
+        self._update_gamestate()
+    
+    def _update_gamestate(self):
+        ''' Updates the entire gamestate each time it is called. This function is in charge of
+            all the character object's movement, and game states as the game progresses. '''
         y, x = self.pacman.curr_loc()
+        self._validate_movement(y, x)                                
+        self._validate_pacman_state()                                
+        self._validate_enemy_movement(y, x)                         
+        self._game_continuation(y, x)   
+
+    def _validate_movement(self, y, x):    
         if (y == 14 and x == 0) or (y == 14 and x == 27):
             self.pacman.teleport()
-            self.state[self.pacman.y][self.pacman.x] = self.pacman
+            self.state[self.pacman.y][self.pacman.y] = self.pacman
 
         else:
             self.pacman.collision(self.state[y][x])
-
+    
+    def _validate_pacman_state(self):
         if self.pacman.invulnerable:
             if self.pacman.boostTime == Pacman.boostTime:
                 for ghost in self.ghosts:
@@ -144,16 +158,16 @@ class Maze():
             
             else:
                 self.pacman.decrease_boost() 
-
+    
+    def _validate_enemy_movement(self, y, x):
         for ghost in self.ghosts:
-            ghost.update_mode(self.update_counter)
+            # ghost.update_mode(self.update_counter)
             ghost.move(self, self.pacman)
             self._update_previous_board_square(ghost)
-            if (ghost.y, ghost.x) == (self.pacman.y, self.pacman.x):
+
+            if (ghost.y, ghost.x) == (y, x):
                 if not ghost.invulnerable:
-                    self.pacman.lives -= 1
-                    if self.pacman.lives:
-                        self.restore_positions()
+                    self.lose_life_update_game()
                 else:
                     self.pacman.collision(ghost)
                     
@@ -163,15 +177,35 @@ class Maze():
                     ghost.pellet = self.state[ghost.y][ghost.x]
                     
                 self.state[ghost.y][ghost.x] = ghost
+    
+    def _game_continuation(self, y, x):
+        if self._validate_upcoming_enemy(x):
+            if not self.pacman.invulnerable:
+                self.lose_life_update_game()
 
-        if not self.game_over:
+        elif not self.game_over:
             self._update_previous_board_square(self.pacman)
             self.state[y][x] = self.pacman
 
         else:
             self.state[y][x] = None
 
-    def restore_positions(self):
+
+    def _validate_upcoming_enemy(self, x) -> bool:
+        if x != self.m_width - 1 and x != 0:
+            return self._validate_past_enemy()
+    
+    def _validate_past_enemy(self):
+        if self.pacman.last:
+            dy, dx = self.pacman.last
+            return type(self.state[dy][dx]) in ghosts.ghosts
+
+    def lose_life_update_game(self):
+        self.pacman.lives -= 1
+        if self.pacman.lives:
+            self.return_to_inital_pos()
+
+    def return_to_inital_pos(self):
         maze = []
         for i in range(len(self.state)):
             row = []
