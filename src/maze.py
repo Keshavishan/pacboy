@@ -119,8 +119,8 @@ class Maze():
         
         self.objects = objects
 
-        self.pacman = self.pacman_location()
-        print(self.pacman)
+        while not self.pacman:
+            self.pacman = self.pacman_location()
 
         self._update_gamestate()
     
@@ -161,7 +161,6 @@ class Maze():
     
     def _validate_enemy_movement(self, y, x):
         for ghost in self.ghosts:
-            # ghost.update_mode(self.update_counter)
             ghost.move(self, self.pacman)
             self._update_previous_board_square(ghost)
 
@@ -190,7 +189,6 @@ class Maze():
         else:
             self.state[y][x] = None
 
-
     def _validate_upcoming_enemy(self, x) -> bool:
         if x != self.m_width - 1 and x != 0:
             return self._validate_past_enemy()
@@ -204,7 +202,6 @@ class Maze():
         self.pacman.lives -= 1
         if self.pacman.lives:
             self.return_to_inital_pos()
-
         else:
             self.game_over = True
 
@@ -225,10 +222,11 @@ class Maze():
                     row.append(self.state[i][j])
 
             maze.append(row)
+        self.state = maze 
 
         for ghost in self.ghosts:
             ghost.x, ghost.y = ghost.start
-            maze[ghost.y][ghost.x] = ghost
+            self.state[ghost.y][ghost.x] = ghost
 
             if ghost.pellet is not None:
                 self.state[ghost.last[1]][ghost.last[0]] = ghost.pellet
@@ -242,15 +240,14 @@ class Maze():
         self.pacman.set_avatar(self.graphics)
         self.pacman.death = False
 
-        self.state = maze
-
-    
     def restore_last_square(self, ghost):
-        if ghost.last is not None and (ghost.y, ghost.x) != ghost.last:
-            if ghost.pellet is not None:
-                self.state[ghost.last[0]][ghost.last[1]] = ghost.pellet
-            else:
-                self.state[ghost.last[0]][ghost.last[1]] = None
+        if ghost.last is not None:
+            if (ghost.y, ghost.x) != ghost.last:
+                if ghost.pellet is not None:
+                    self.state[ghost.last[0]][ghost.last[1]] = ghost.pellet
+                    ghost.pellet = None
+                else:
+                    self.state[ghost.last[0]][ghost.last[1]] = None
 
     def pacman_location(self) -> Pacman:
         for obj in self.objects:

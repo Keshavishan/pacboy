@@ -37,10 +37,6 @@ class Blinky(Ghost):
 
     def move(self, maze, pacman):
         if not self.invulnerable:
-            # if self.mode == 1:
-            #     self.scatter(maze, self.target)
-
-            # elif self.mode == 2:
             self.chase(maze, pacman)
 
     def chase(self, maze, pacman: Pacman):
@@ -48,10 +44,10 @@ class Blinky(Ghost):
         self.make_move(maze, start, pacman)
 
     def make_move(self, maze, start, pacman: Pacman):
-        if not self.invulnerable:
-            path = self.bfs(maze, start, (pacman.y, pacman.x))
-        else:
+        if self.invulnerable:
             path = self.bfs(maze, start, (self.start[1], self.start[0]))[:-1]
+        else:
+            path = self.bfs(maze, start, (pacman.y, pacman.x))
 
         if path is not None and path != []:
             distance = 1 if len(path) > 1 else 0
@@ -72,7 +68,6 @@ class Blinky(Ghost):
             self.run()
 
     def bfs(self, maze, start, target):
-        target_y, target_x = target
         queue = deque([[start]])
         seen = set([start])
 
@@ -80,7 +75,7 @@ class Blinky(Ghost):
             path = queue.popleft()
             x, y = path[-1]
 
-            if (x, y) == (target_x, target_y):
+            if (y, x) == target:
                 return path
 
             adjacent_squares = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]

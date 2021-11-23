@@ -43,13 +43,12 @@ class Pacman(Character):
 
     def collision(self, collisionWith):
         if type(collisionWith) == Pellet:
-            self.points += 10
+            self.points += Pellet.value
         elif type(collisionWith) == PowerPellet:
-            self.points += 50
+            self.points += PowerPellet.value
 
             if not self.invulnerable:
                 self.invulnerable = not self.invulnerable
-                print(self.invulnerable)
             else:
                 self.boostTime = self.boostTime + Pacman.boostTime
 
