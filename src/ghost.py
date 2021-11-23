@@ -11,7 +11,6 @@ class Ghost(Character):
     def __init__(self, x, y, ghost, graphics: Graphics, mode=1):
         Character.__init__(self, x, y, "North")
         self.ghost = ghost
-        self.slowed_down = False
         self.mode = mode
         self.set_avatar(ghost, graphics)
         self.pellet = None

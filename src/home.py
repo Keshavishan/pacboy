@@ -79,7 +79,7 @@ class Home():
     def start_game(self):
         self.frame.destroy()
         self.game = Game(self.root, self.user, self.width, self.height, self.graphics, self.create_frame)
-        self.game.run()
+        self.game.run(False)
 
     def leaderboard(self):
         icon = self.graphics.get("leaderboard")

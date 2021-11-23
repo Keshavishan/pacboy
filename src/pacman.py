@@ -52,7 +52,7 @@ class Pacman(Character):
             else:
                 self.boostTime = self.boostTime + Pacman.boostTime
 
-        elif type(collisionWith) in ghosts.ghosts:
+        elif type(collisionWith) in ghosts.all_ghosts:
             if not self.invulnerable:
                 self.ghosts_eaten += 1
                 self.points += (100 * self.ghosts_eaten)

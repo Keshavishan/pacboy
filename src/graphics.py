@@ -1,4 +1,4 @@
-from PIL.ImageTk import PhotoImage
+from tkinter import PhotoImage
 import os
 
 class Graphics():
