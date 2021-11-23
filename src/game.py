@@ -102,17 +102,17 @@ class Game():
         self.refresh_maze()
         self.countdown()
         self.root.after(2100, self.update)
-    
-    def _gameover_transition(self):
-        self.key_bindings(False)
-        self.game.pacman.avatar = None
-        self.show_image_screen("game_over")
+
+    def back(self):
+        button = tk.Button(self.current, image=self.graphics.get('back'), command=self.exit)
+        button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
+
+        return button
 
     def update(self):
         if self.pause:
             self.show_image_screen('boss' if self.interupt == "b" else 'paused')
-            button = tk.Button(self.current, image=self.graphics.get('back'), command=self.exit)
-            button.place(x=((self.width - button.winfo_reqwidth())/2), y=self.height/2 + 150)
+            button = self.back()
             self.check_pause(button)
 
         else:
@@ -126,10 +126,11 @@ class Game():
                 self.key_bindings(False)
                 self.root.after(750, self.handle_next_level)
                 self.current.after(5000, self.run)
-
             elif self.game.game_over:
-                print("game_over")
-                self._gameover_transition()
+                self.key_bindings(False)
+                self.game.pacman.avatar = None
+                self.show_image_screen("game_over")
+                self.back()
             elif self.game.pacman.is_respawning:
                 self.game.pacman.is_respawning = False
                 self.draw_maze()

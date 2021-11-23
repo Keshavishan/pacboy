@@ -15,7 +15,7 @@ class Inky(Ghost):
         super().__init__(x, y, Inky.name, graphics)
 
     def move(self, maze, pacman):
-         # if not self.invulnerable:
+        # if not self.invulnerable:
         #     if self.mode == 1:
         #         self.scatter(maze, self.target)
 
