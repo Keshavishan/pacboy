@@ -80,6 +80,7 @@ class Game():
             self.update()
 
     def exit(self):
+        print(self.points, self.level, self.no_lives)
         self.current.destroy()
         self.points.destroy()
         self.level.destroy()
