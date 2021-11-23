@@ -1,6 +1,6 @@
 from powerPellet import PowerPellet
 from character import Character
-from dot import Dot
+from pellet import Pellet
 from graphics import Graphics
 
 class Pacman(Character):
@@ -40,7 +40,7 @@ class Pacman(Character):
         self.boostTime -= 1
 
     def collision(self, collisionWith):
-        if type(collisionWith) == Dot:
+        if type(collisionWith) == Pellet:
             self.points += 10
         elif type(collisionWith) == PowerPellet:
             self.points += 50

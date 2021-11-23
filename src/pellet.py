@@ -1,10 +1,10 @@
 from graphics import Graphics
 
-class Dot():
+class Pellet():
     id = 2
-    name = "dot"
+    name = "pellet"
     
     def __init__(self, x, y, graphics: Graphics):
         self.x = x
         self.y = y
-        self.avatar = graphics.get('dot')
+        self.avatar = graphics.get('pellet')

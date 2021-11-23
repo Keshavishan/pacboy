@@ -1,6 +1,6 @@
 from character import Character
 from graphics import Graphics
-from dot import Dot
+from pellet import Pellet
 from powerPellet import PowerPellet
 from pacman import Pacman
 from collections import deque as queue
@@ -14,6 +14,7 @@ class Ghost(Character):
         self.slowed_down = False
         self.mode = mode
         self.set_avatar(ghost, graphics)
+        self.pellet = None
 
     def set_avatar(self, ghost, graphics: Graphics):
         if self.invulnerable:
@@ -79,7 +80,7 @@ class Ghost(Character):
         possible_moves = []
 
         def is_valid(object):
-            if (type(object) == Dot or object == None or type(object) == PowerPellet) or object.name == self.ghost:
+            if (type(object) == Pellet or object == None or type(object) == PowerPellet) or object.name == self.ghost:
                 return True
             return False
 

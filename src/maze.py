@@ -1,5 +1,5 @@
 from powerPellet import PowerPellet
-from dot import Dot
+from pellet import Pellet
 from graphics import Graphics
 from helper import listmaker
 from pacman import Pacman
@@ -63,8 +63,8 @@ class Maze():
                 elif mapping[i][j] == Pacman.id:
                     row.append( Pacman(j, i, self.graphics) )
 
-                elif mapping[i][j] == Dot.id:
-                    row.append( Dot(j, i, self.graphics) )
+                elif mapping[i][j] == Pellet.id:
+                    row.append( Pellet(j, i, self.graphics) )
 
                 elif mapping[i][j] == PowerPellet.id:
                     row.append(PowerPellet(j, i, self.graphics))
@@ -149,6 +149,10 @@ class Maze():
             ghost.update_mode(self.update_counter)
             ghost.move(self, self.pacman)
             self._update_previous_board_square(ghost)
+            self.restore_last_square(ghost)
+            if type(self.state[ghost.y][ghost.x]) in [Pellet, PowerPellet]:
+                ghost.pellet = self.state[ghost.y][ghost.x]
+                
             self.state[ghost.y][ghost.x] = ghost
 
         if not self.game_over:
@@ -157,6 +161,15 @@ class Maze():
 
         else:
             self.state[y][x] = None
+    
+    def restore_last_square(self, ghost):
+        if ghost.last is not None and (ghost.y, ghost.x) != ghost.last:
+            if ghost.pellet is not None:
+                self.state[ghost.last[0]][ghost.last[1]] = ghost.pellet
+            else:
+                self.state[ghost.last[0]][ghost.last[1]] = None
+
+            
 
     def pacman_location(self) -> Pacman:
         for obj in self.objects:

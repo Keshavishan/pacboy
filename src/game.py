@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter.constants import CENTER
 from powerPellet import PowerPellet
-from dot import Dot
+from pellet import Pellet
 from ghosts import Inky, Blinky, Pinky, Clyde, ghosts
 from graphics import Graphics
 from maze import Maze
@@ -48,7 +48,7 @@ class Game():
         for obj in self.game.objects:
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1) * width, (obj.y * height / height + 1) * height, fill = 'dark blue', width=0)
-            elif type(obj) in [Pacman, Dot, PowerPellet, Inky, Pinky, Blinky, Clyde]:
+            elif type(obj) in [Pacman, Pellet, PowerPellet, Inky, Pinky, Blinky, Clyde]:
                 self.current.create_image( obj.x * width + (width / 2), obj.y * height + (height / 2), image = obj.avatar)
     
     def refresh_maze(self):
@@ -108,7 +108,7 @@ class Game():
             self.game.update_directions()
             self.game.update_maze()
             
-            total_pickups = { p for p in self.game.objects if type(p) in [Dot, PowerPellet] }
+            total_pickups = { p for p in self.game.objects if type(p) in [Pellet, PowerPellet] }
             
             if len(total_pickups) == 0:
                 self.game.pacman.direction = None
