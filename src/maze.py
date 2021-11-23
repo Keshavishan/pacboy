@@ -205,6 +205,9 @@ class Maze():
         if self.pacman.lives:
             self.return_to_inital_pos()
 
+        else:
+            self.game_over = True
+
     def return_to_inital_pos(self):
         maze = []
         for i in range(len(self.state)):

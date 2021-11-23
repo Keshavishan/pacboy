@@ -96,11 +96,17 @@ class Game():
         self.current.delete(tk.ALL)
         self.show_image_screen("loading")
         self.root.after(3500, self.to_next_level)
+        
     
     def respawn(self):
         self.refresh_maze()
         self.countdown()
         self.root.after(2100, self.update)
+    
+    def _gameover_transition(self):
+        self.key_bindings(False)
+        self.game.pacman.avatar = None
+        self.show_image_screen("game_over")
 
     def update(self):
         if self.pause:
@@ -120,6 +126,10 @@ class Game():
                 self.key_bindings(False)
                 self.root.after(750, self.handle_next_level)
                 self.current.after(5000, self.run)
+
+            elif self.game.game_over:
+                print("game_over")
+                self._gameover_transition()
             elif self.game.pacman.is_respawning:
                 self.game.pacman.is_respawning = False
                 self.draw_maze()
