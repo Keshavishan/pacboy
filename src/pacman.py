@@ -2,6 +2,7 @@ from powerPellet import PowerPellet
 from character import Character
 from pellet import Pellet
 from graphics import Graphics
+import ghosts
 
 class Pacman(Character):
     id = 1
@@ -19,6 +20,10 @@ class Pacman(Character):
 
         self.last_direction, self.next_direction = 'West', None
         self.boostTime = 45
+        self.ghosts_eaten = 0
+
+        self.is_respawning = False
+        self.death = False
 
     def change_direction(self, direction):
         self.last_direction = self.direction
@@ -49,3 +54,10 @@ class Pacman(Character):
                 self.invulnerable = not self.invulnerable
             else:
                 self.boostTime = self.boostTime + Pacman.boostTime
+
+        elif type(collisionWith) in ghosts.ghosts:
+            if not self.invulnerable:
+                self.ghosts_eaten += 1
+                self.points += (100 * self.ghosts_eaten)
+            else:
+                self.death = True

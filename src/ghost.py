@@ -26,7 +26,7 @@ class Ghost(Character):
         print("update_mode", self.invulnerable, count)
         if not self.invulnerable:
             no_seconds = (count * 125) / 1000
-            if no_seconds < 8 or no_seconds in range(27, 34) or no_seconds in range(54, 59) or no_seconds in range(79, 84):
+            if no_seconds < 2 or no_seconds in range(27, 34) or no_seconds in range(54, 59) or no_seconds in range(79, 84):
                 self.mode = 1
             else:
                 self.mode = 2
@@ -34,10 +34,6 @@ class Ghost(Character):
             self.mode = 3
     
     def _path_length(self, path) -> int:
-        ''' This function is a helper function to avoid index errors depending on
-            how large the path is. If the path is larger than 1, we can just get
-            the [1] index of the list for the next location. Otherwise, if it is
-            only 1, we do [0] since a list of length 1 only has that index value. '''
         if len(path) > 1:
             return 1
         else:

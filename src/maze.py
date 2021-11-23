@@ -149,11 +149,20 @@ class Maze():
             ghost.update_mode(self.update_counter)
             ghost.move(self, self.pacman)
             self._update_previous_board_square(ghost)
-            self.restore_last_square(ghost)
-            if type(self.state[ghost.y][ghost.x]) in [Pellet, PowerPellet]:
-                ghost.pellet = self.state[ghost.y][ghost.x]
-                
-            self.state[ghost.y][ghost.x] = ghost
+            if (ghost.y, ghost.x) == (self.pacman.y, self.pacman.x):
+                if not ghost.invulnerable:
+                    self.pacman.lives -= 1
+                    if self.pacman.lives:
+                        self.restore_positions()
+                else:
+                    self.pacman.collision(ghost)
+                    
+            else:
+                self.restore_last_square(ghost)
+                if type(self.state[ghost.y][ghost.x]) in [Pellet, PowerPellet]:
+                    ghost.pellet = self.state[ghost.y][ghost.x]
+                    
+                self.state[ghost.y][ghost.x] = ghost
 
         if not self.game_over:
             self._update_previous_board_square(self.pacman)
@@ -161,6 +170,43 @@ class Maze():
 
         else:
             self.state[y][x] = None
+
+    def restore_positions(self):
+        maze = []
+        for i in range(len(self.state)):
+            row = []
+            for j in range(len(self.state[i])):
+                if type(self.state[i][j]) == Pacman:
+                    row.append(None)
+                elif type(self.state[i][j]) in ghosts.ghosts:
+                    if self.state[i][j].pellet is not None:
+                        row.append(self.state[i][j].pellet)
+                        self.state[i][j].pellet = None
+                    else:
+                        row.append(None)
+                else:
+                    row.append(self.state[i][j])
+
+            maze.append(row)
+
+        for ghost in self.ghosts:
+            ghost.x, ghost.y = ghost.start
+            maze[ghost.y][ghost.x] = ghost
+
+            if ghost.pellet is not None:
+                self.state[ghost.last[1]][ghost.last[0]] = ghost.pellet
+                ghost.pellet = None
+
+        self.pacman.x, self.pacman.y = self.pacman.start
+        self.pacman.direction = "West"
+        self.pacman.next_direction = None
+        self.pacman.is_respawning = True
+
+        self.pacman.set_avatar(self.graphics)
+        self.pacman.death = False
+
+        self.state = maze
+
     
     def restore_last_square(self, ghost):
         if ghost.last is not None and (ghost.y, ghost.x) != ghost.last:
@@ -168,8 +214,6 @@ class Maze():
                 self.state[ghost.last[0]][ghost.last[1]] = ghost.pellet
             else:
                 self.state[ghost.last[0]][ghost.last[1]] = None
-
-            
 
     def pacman_location(self) -> Pacman:
         for obj in self.objects:

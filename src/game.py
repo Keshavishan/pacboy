@@ -96,7 +96,13 @@ class Game():
         self.current.delete(tk.ALL)
         self.show_image_screen("loading")
         self.root.after(3500, self.to_next_level)
-           
+    
+    def respawn(self):
+        self.refresh_maze()
+        self.countdown()
+        self.root.after(2100, self.update)
+
+    
     def update(self):
         if self.pause:
             self.show_image_screen('boss' if self.interupt == "b" else 'paused')
@@ -115,6 +121,10 @@ class Game():
                 self.key_bindings(False)
                 self.root.after(750, self.handle_next_level)
                 self.current.after(5000, self.run)
+            elif self.game.pacman.is_respawning:
+                self.game.pacman.is_respawning = False
+                self.draw_maze()
+                self.root.after(550, self.respawn())
 
             else:
                 self.current.after(125, self.update)
