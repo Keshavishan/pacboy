@@ -37,7 +37,6 @@ class Game():
         self.game.new_level()
 
     def pause_game(self, event):
-        print(event)
         self.pause = not self.pause
         self.interupt = event.keysym
 
@@ -173,13 +172,16 @@ class Game():
         except AttributeError:
             pass
 
+    # def print(self, event: tk.Event):
+    #     print(event.__dict__)
+
     def key_bindings(self, enabled: bool):
         keys = [
             (self.options[option]['key'], self.pause_game if self.options[option]['type'] == "pause" else self.change_direction) for option in self.options]
+        # keys += [("<Control-Shift-Alt_R>", self.print)]
 
         if enabled:
             for key in keys:
-                print(key[0], key[1])
                 self.root.bind(key[0], key[1])
             for key in keys:
                 self.root.unbind(key)

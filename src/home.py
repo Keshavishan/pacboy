@@ -3,6 +3,7 @@ import os
 import pickle
 from graphics import Graphics
 from game import Game
+from leaderboard import Leaderboard
 from options import Options
 
 
@@ -29,14 +30,23 @@ class Home():
 
         self.menu()
 
+        # newlist = 
+
     def save_score(self, score):
         prev_score = self.user["high_score"]
         self.user["high_score"] = score if score > prev_score else prev_score
 
     def base_frame(self):
-        self.frame = tk.Frame(self.root, width=self.width,
+        frame = tk.Frame(self.root, width=self.width,
                               height=self.height, background="black")
-        self.frame.pack(expand=True, fill=tk.BOTH)
+        frame.pack(expand=True, fill=tk.BOTH)
+
+        pacman_logo = self.graphics.get("pacman")
+        label = tk.Label(frame, image=pacman_logo,
+                         background="black", borderwidth=0, bd=0)
+        label.place(relx=.5, rely=.15, anchor="c")
+
+        self.frame = frame
 
     def return_to_menu(self):
         self.frame.destroy()
@@ -44,11 +54,7 @@ class Home():
 
     def menu(self):
         self.base_frame()
-        pacman_logo = self.graphics.get("pacman")
-        label = tk.Label(self.frame, image=pacman_logo,
-                         background="black", borderwidth=0, bd=0)
-        label.place(relx=.5, rely=.2, anchor="c")
-        menu_items = [Options(self)]
+        menu_items = [Leaderboard(self), Options(self)]
 
         if self.screen == 0:
             self.login()
@@ -56,7 +62,7 @@ class Home():
         elif self.screen == 1:
             self.welcome()
             self.play()
-            self.leaderboard()
+           
             for menu_item in menu_items:
                 menu_item.place_button()
             self.exit()
@@ -145,12 +151,6 @@ class Home():
         self.frame.destroy()
         self.game = Game(self)
         self.game.run(False)
-
-    def leaderboard(self):
-        icon = self.graphics.get("leaderboard")
-        button = tk.Button(self.frame, image=icon, command=self.start_game,
-                           background="black", highlightthickness=0, bd=0)
-        button.place(relx=.5, rely=.575, anchor="c")
 
     def exit_sequence(self):
         dbfile = open(f'{self.loc}/gameplay.pickle', 'wb')
