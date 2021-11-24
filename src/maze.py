@@ -13,10 +13,10 @@ class Maze():
         self.ghosts, self.objects = set(), set()
         self.game_over = False
         self.update_counter = 0
-        self.total_pickups = 0
+        self.pellets_left = 0
    
     def new_level(self):
-        points, lives, level = self.stats()
+        points, lives, curr_level, defBoostTime = self.stats()
         self.ghosts, self.game_objects = set(), set()
 
         mapping = [ listmaker(0, 28), #0
@@ -24,7 +24,7 @@ class Maze():
             [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],#2
             [0, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0],#3
             [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],#4
-            [0] + listmaker(2, 26) + [0],#5
+            [0] + listmaker(2, 12) + [3] + listmaker(2, 13) + [0] + [0],#5
             [0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 0],#6
             [0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 0],#7
             [0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0],#8
@@ -48,9 +48,33 @@ class Maze():
             [0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0],#26
             [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0],#27
             [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0],#28
-            [0] + listmaker(2, 26) + [0],#29
+            [0] + listmaker(2, 13) + [3] + listmaker(2, 12) + [0] + [0],#29
             listmaker(0, 28)#30
         ]
+
+        overrides = {
+            2: {
+                2: [(5, 13)]
+            },
+            3: {
+                0: [ (29, 7), (29, 8)],
+                2: [(29, 14)]  
+            },
+            4: {
+                0: [ (29, 19), (29, 20) ],
+            },
+            5: {
+                0: [ (5, 13), (5, 14)],
+            }
+        }
+
+        for level in overrides:
+            if level < curr_level + 1:
+                for override, positions in overrides[level].items():
+                    for position in positions:
+                        mapping[position[0]][position[1]] = override
+
+        
 
         self.m_height, self.m_width = len(mapping), len(mapping[0])
         maze = []
@@ -80,14 +104,16 @@ class Maze():
         self.state = maze
         self.update_maze()
 
-        self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, level
+        self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, curr_level
+        self.pacman.defBoostTime, self.pacman.boostTime = defBoostTime, defBoostTime
+
         self.ghosts = { e for e in self.objects if type(e) in ghosts.all_ghosts }
 
     def stats(self) -> tuple:
         if self.state is not None:
-            return self.pacman.points, self.pacman.lives, self.pacman.level + 1
+            return self.pacman.points, self.pacman.lives, self.pacman.level + 1, 45 - (5 * self.pacman.level)
         else:
-            return 0, 3, 1
+            return 0, 3, 1, 45
 
     def reset_last_square(self, game_object):
         if game_object.last is not None:
@@ -109,13 +135,10 @@ class Maze():
         
         self.objects = objects
 
-        self.total_pickups = {p for p in self.objects if type(p) in [
+        pellets = {p for p in self.objects if type(p) in [
                 Pellet, PowerPellet]}
 
-        print(self.total_pickups)
-
-        # while not self.pacman:
-        #     self.pacman = self.pacman_location()
+        self.pellets_left = len(pellets)
 
         self._update_gamestate()
     
@@ -131,7 +154,7 @@ class Maze():
             self.pacman.collision(self.state[y][x])                        
         # Pacman boost       
         if self.pacman.invulnerable:
-            if self.pacman.boostTime == Pacman.boostTime:
+            if self.pacman.boostTime == self.pacman.defBoostTime:
                 for ghost in self.ghosts:
                     ghost.invulnerable = True
                     ghost.set_avatar(ghost.name, self.graphics)
@@ -141,12 +164,12 @@ class Maze():
                 for ghost in self.ghosts:
                     ghost.invulnerable = False
                     ghost.set_avatar(ghost.name, self.graphics)
-                self.pacman.boostTime = Pacman.boostTime
+                self.pacman.boostTime = self.pacman.defBoostTime
                 self.pacman.invulnerable = not self.pacman.invulnerable
             
             else:
                 self.pacman.boostTime -= 1
-        if self.update_counter % 2 or self.pacman.level > 1:
+        if self.update_counter % 2 or self.pellets_left < 80 + (20 * self.pacman.level) or (self.pacman.level > 3 and self.pacman.lives < 2):
             for ghost in self.ghosts:
                 ghost.move(self, self.pacman)
                 self.reset_last_square(ghost)
@@ -161,8 +184,8 @@ class Maze():
                     self.ghost_restore_last_square(ghost)
                     if type(self.state[ghost.y][ghost.x]) in [Pellet, PowerPellet]:
                         ghost.pellet = self.state[ghost.y][ghost.x]
-                        
-                    self.state[ghost.y][ghost.x] = ghost                         
+                    if type(self.state[ghost.y][ghost.x]) != Wall:
+                        self.state[ghost.y][ghost.x] = ghost                         
         # Other
         if self._validate_upcoming_enemy(x):
             if not self.pacman.invulnerable:

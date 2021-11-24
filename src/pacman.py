@@ -6,7 +6,6 @@ import ghosts
 
 class Pacman(Character):
     id = 1
-    boostTime = 45
     name = "pacman"
 
     def __init__(self, x, y, graphics: Graphics, direction = 'West'):
@@ -19,6 +18,7 @@ class Pacman(Character):
         self.set_avatar(graphics)
 
         self.last_direction, self.next_direction = 'West', None
+        self.defBoostTime = 45
         self.boostTime = 45
         self.ghosts_eaten = 0
 
@@ -50,7 +50,7 @@ class Pacman(Character):
             if not self.invulnerable:
                 self.invulnerable = not self.invulnerable
             else:
-                self.boostTime = self.boostTime + Pacman.boostTime
+                self.boostTime = self.boostTime + self.defBoostTime
 
         elif type(collisionWith) in ghosts.all_ghosts:
             if not self.invulnerable:

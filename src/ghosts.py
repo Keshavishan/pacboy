@@ -5,7 +5,7 @@ from pacman import Pacman
 from wall import Wall
 
 class Blinky(Ghost):
-    id = 5
+    id = 4
     name = 'blinky'
     target = (26, 2) # x, y
 
@@ -24,6 +24,7 @@ class Blinky(Ghost):
 
     def make_move(self, maze, pacman: Pacman):
         start = (self.x, self.y)
+        
         target = (self.start[1], self.start[0]) if self.invulnerable else pacman.curr_loc()
         path = self.shortest_path(maze, start, target)
 
@@ -66,68 +67,4 @@ class Blinky(Ghost):
                     queue.append(path + [(x1, y1)])
                     seen.add((x1, y1))
 
-# class Inky(Ghost):
-#     id = 4
-#     name = 'inky'
-#     target = (26, 28) # x, y
-
-#     def __init__(self, x, y, graphics: Graphics):
-#         super().__init__(x, y, Inky.name, graphics)
-
-#     def move(self, maze, pacman):
-#         # if not self.invulnerable:
-#         #     if self.mode == 1:
-#         #         self.scatter(maze, self.target)
-
-#         #     elif self.mode == 2:
-#         #         self.chase()
-#         pass
-
-
-#     def chase(self):
-#         print()
-
-# class Pinky(Ghost):
-#     id = 6
-#     name = 'pinky'
-#     target = (1, 2) # x, y
-
-#     def __init__(self, x, y, graphics: Graphics):
-#         super().__init__(x, y, Pinky.name, graphics)
-
-#     def move(self, maze, pacman):
-#         # if not self.invulnerable:
-#         #     if self.mode == 1:
-#         #         self.scatter(maze, self.target)
-
-#         #     elif self.mode == 2:
-#         #         self.chase()
-#         pass
-
-#     def chase(self):
-#         print()
-
-# class Clyde(Ghost):
-#     id = 7
-#     name = 'clyde'
-#     target = (1, 28) # x, y
-
-#     def __init__(self, x, y, graphics: Graphics):
-#         super().__init__(x, y, Clyde.name, graphics)
-
-#     def move(self, maze, pacman):
-#          # if not self.invulnerable:
-#         #     if self.mode == 1:
-#         #         self.scatter(maze, self.target)
-
-#         #     elif self.mode == 2:
-#         #         self.chase()
-#         pass
-
-
-#     def chase(self):
-#         print()
-
 all_ghosts = [Blinky]
-
-# ghosts = [Inky, Blinky, Pinky, Clyde]

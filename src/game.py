@@ -108,12 +108,11 @@ class Game():
 
     def update(self):
         if self.pause:
-
             self.show_image_screen(
                 'boss' if self.return_key_name(self.interupt) == "Boss Key" else 'paused')
             button = self.back()
             self.check_pause(button)
-
+            pass
         else:
             self.game.update_directions()
             self.game.update_maze()
@@ -172,13 +171,13 @@ class Game():
         except AttributeError:
             pass
 
-    # def print(self, event: tk.Event):
-    #     print(event.__dict__)
+    def print(self, event: tk.Event):
+        pass
 
     def key_bindings(self, enabled: bool):
         keys = [
             (self.options[option]['key'], self.pause_game if self.options[option]['type'] == "pause" else self.change_direction) for option in self.options]
-        # keys += [("<Control-Shift-Alt_R>", self.print)]
+        keys += [("<Control-r>", self.print)]
 
         if enabled:
             for key in keys:
