@@ -9,22 +9,17 @@ from pacman import Pacman
 from wall import Wall
 import pickle
 
-
 class Game():
-    def __init__(self, root: tk.Tk, user, width, height, graphics: Graphics, create_frame):
-        self.root = root
-        self.width = 1000
-        self.height = 850
-        self.graphics = graphics
-        self.create_frame = create_frame
-
-        self.user = user
-
-        self.current = tk.Canvas(
-            root, width=width, height=height, background="black")
+    def __init__(self, parent):
+        self.root = parent.root
+        self.width = parent.width
+        self.height = parent.height
+        self.graphics = parent.graphics
+        self.parent = parent
+        self.current = tk.Canvas(parent.root, width=parent.width, height=parent.height, background="black")
         self.current.grid(row=0, column=0, sticky=tk.N)
 
-        def label(): return tk.Label(root, text='0', font=('Arial', 18))
+        def label(): return tk.Label(parent.root, text='0', font=('Arial', 18))
 
         self.points, self.level, self.no_lives = label(), label(), label()
 
@@ -32,14 +27,17 @@ class Game():
         self.level.grid(row=1, column=0, sticky=tk.N)
         self.no_lives.grid(row=1, column=0, sticky=tk.E)
 
+        self.options = {option['key']: option for option in self.parent.user["options"]}
+
         self.key_bindings(True)
         self.pause = False
         self.interupt = None
 
-        self.game = Maze(graphics)
+        self.game = Maze(parent.graphics)
         self.game.new_level()
 
-    def pause_game(self, event: tk.Event):
+    def pause_game(self, event):
+        print(event)
         self.pause = not self.pause
         self.interupt = event.keysym
 
@@ -80,13 +78,12 @@ class Game():
             self.update()
 
     def exit(self):
-        print(self.points, self.level, self.no_lives)
         self.current.destroy()
         self.points.destroy()
         self.level.destroy()
         self.no_lives.destroy()
-
-        self.create_frame()
+        self.parent.save_score(self.game.pacman.points)
+        self.parent.menu()
 
     def show_image_screen(self, image):
         self.current.create_image(
@@ -112,8 +109,9 @@ class Game():
 
     def update(self):
         if self.pause:
+
             self.show_image_screen(
-                'boss' if self.interupt == "b" else 'paused')
+                'boss' if self.return_key_name(self.interupt) == "Boss Key" else 'paused')
             button = self.back()
             self.check_pause(button)
 
@@ -146,19 +144,23 @@ class Game():
 
             if not self.game.game_over:
                 self.refresh_maze()
+    
+    def return_key_name(self, key):
+        if self.options.get(key, False):
+            return self.options[key]['name']
+        elif self.options.get(f'<{key}>', False):
+            return self.options[f'<{key}>']['name']
 
-    def change_direction(self, event: tk.Event):
+    def change_direction(self, event):
         mapping = {
             "Up": "North",
             "Down": "South",
             "Left": "West",
             "Right": "East",
-            "w": "North",
-            "s": "South",
-            "a": "West",
-            "d": "East",
         }
-        direction = mapping[event.keysym]
+
+        direction = mapping[self.return_key_name(event.keysym)]
+
         try:
             self.game.pacman.change_direction(direction)
             if self.game.can_change_direction(direction):
@@ -173,16 +175,11 @@ class Game():
 
     def key_bindings(self, enabled: bool):
         keys = [
-            ('<space>', self.pause_game),
-            ('b', self.pause_game),
-            ('<Left>', self.change_direction),
-            ('<Right>', self.change_direction),
-            ('<Up>', self.change_direction),
-            ('<Down>', self.change_direction)
-        ]
+            (self.options[option]['key'], self.pause_game if self.options[option]['type'] == "pause" else self.change_direction) for option in self.options]
 
         if enabled:
             for key in keys:
+                print(key[0], key[1])
                 self.root.bind(key[0], key[1])
             for key in keys:
                 self.root.unbind(key)

@@ -69,8 +69,8 @@ class Maze():
                 elif mapping[i][j] == PowerPellet.id:
                     row.append(PowerPellet(j, i, self.graphics))
                 
-                elif mapping[i][j] == ghosts.Blinky.id:
-                    row.append(ghosts.Blinky(j, i, self.graphics))
+                # elif mapping[i][j] == ghosts.Blinky.id:
+                #     row.append(ghosts.Blinky(j, i, self.graphics))
 
                 else:
                     row.append(None)
