@@ -28,26 +28,27 @@ class Blinky(Ghost):
         target = (self.start[1], self.start[0]) if self.invulnerable else pacman.curr_loc()
         path = self.shortest_path(maze, start, target)
 
-        if self.invulnerable:
-            path = path[:-1]
+        if path:
+            if self.invulnerable:
+                path = path[:-1]
 
-        if path is not None and path != []:
-            distance = 1 if len(path) > 1 else 0
+            if path is not None and path != []:
+                distance = 1 if len(path) > 1 else 0
 
-            if self.y < path[distance][1]:
-                self.direction = 'South'
+                if self.y < path[distance][1]:
+                    self.direction = 'South'
 
-            elif self.y > path[distance][1]:
-                self.direction = 'North'
+                elif self.y > path[distance][1]:
+                    self.direction = 'North'
 
-            elif self.x < path[distance][0]:
-                self.direction = 'East'
+                elif self.x < path[distance][0]:
+                    self.direction = 'East'
 
-            elif self.x > path[distance][0]:
-                self.direction = 'West'
+                elif self.x > path[distance][0]:
+                    self.direction = 'West'
 
-            self.last = self.curr_loc()
-            self.run()
+                self.last = self.curr_loc()
+                self.run()
 
     def shortest_path(self, maze, start, target):
         queue = deque([[start]])

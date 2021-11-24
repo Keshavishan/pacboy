@@ -34,7 +34,7 @@ class Game():
         self.interupt = None
 
         self.game = Maze(parent.graphics)
-        self.game.new_level()
+        self.game.new_level(self.parent.user["saved_game"])
 
     def pause_game(self, event):
         self.pause = not self.pause
@@ -76,13 +76,16 @@ class Game():
             button.destroy()
             self.update()
 
-    def exit(self):
+    def exit(self, save = True):
         self.current.destroy()
         self.points.destroy()
         self.level.destroy()
         self.no_lives.destroy()
-        self.parent.save_score(self.game.pacman.points)
+
+        if save:
+            self.parent.save_score(self.game.pacman.points)
         self.parent.menu()
+
 
     def show_image_screen(self, image):
         self.current.create_image(
@@ -95,11 +98,12 @@ class Game():
     def handle_next_level(self):
         self.current.delete(tk.ALL)
         self.show_image_screen("loading")
+        self.parent.save_progress(self.game.pacman.lives, self.game.pacman.level, self.game.pacman.points)
         self.root.after(3500, self.to_next_level)
 
     def back(self):
         button = tk.Button(self.current, image=self.graphics.get(
-            'back'), command=self.exit)
+            'back'), command=lambda: self.exit(self.game.game_over))
         
         button.place(x=((self.width - button.winfo_reqwidth())/2),
                      y=self.height/2 + 150)

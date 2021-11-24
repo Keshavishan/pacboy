@@ -36,6 +36,9 @@ class Home():
         prev_score = self.user["high_score"]
         self.user["high_score"] = score if score > prev_score else prev_score
 
+    def save_progress(self, lives, level, points):
+        self.user["saved_game"] = [lives, level, points]
+
     def base_frame(self):
         frame = tk.Frame(self.root, width=self.width,
                               height=self.height, background="black")
@@ -77,6 +80,7 @@ class Home():
                 self.user = {
                     "name": player,
                     "high_score": 0,
+                    "saved_game": [],
                     "options": [
                         {
                             "name": "Pause",

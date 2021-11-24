@@ -15,8 +15,8 @@ class Maze():
         self.update_counter = 0
         self.pellets_left = 0
    
-    def new_level(self):
-        points, lives, curr_level, defBoostTime = self.stats()
+    def new_level(self, saved_game = []):
+        points, lives, curr_level, defBoostTime = self.stats(saved_game)
         self.ghosts, self.game_objects = set(), set()
 
         mapping = [ listmaker(0, 28), #0
@@ -109,8 +109,10 @@ class Maze():
 
         self.ghosts = { e for e in self.objects if type(e) in ghosts.all_ghosts }
 
-    def stats(self) -> tuple:
-        if self.state is not None:
+    def stats(self, saved_game) -> tuple:
+        if saved_game:
+            return saved_game[2], saved_game[0], saved_game[1] + 1, 45 - (5 * saved_game[1])
+        elif self.state is not None:
             return self.pacman.points, self.pacman.lives, self.pacman.level + 1, 45 - (5 * self.pacman.level)
         else:
             return 0, 3, 1, 45
