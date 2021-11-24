@@ -12,14 +12,14 @@ class Blinky(Ghost):
     def __init__(self, x, y, graphics: Graphics):
         super().__init__(x, y, Blinky.name, graphics)
 
-    def move(self, maze, pacman):
-        if not self.invulnerable:
-            self.chase(maze, pacman)
-        else:
-            pass
+    # def move(self, maze, pacman):
+        # if not self.invulnerable:
+            # self.chase(maze, pacman)
+        # else:
+        #     pass
             # when enemy's can be eaten 
 
-    def chase(self, maze, pacman: Pacman):
+    def move(self, maze, pacman: Pacman):
         self.make_move(maze, pacman)
 
     def make_move(self, maze, pacman: Pacman):

@@ -6,7 +6,7 @@ class Leaderboard():
         self.parent = parent
         icon = parent.graphics.get("leaderboard")
         self.button = tk.Button(parent.frame, image=icon, bg="black", command=self.screen, foreground="black", highlightthickness = 0, bd = 0)
-        self.back_icon = self.parent.graphics.get('back')
+        self.back_button = lambda: tk.Button(self.parent.frame, image=self.parent.graphics.get('back'), bg="black", foreground="black", highlightthickness = 0, bd = 0, command=self.parent.return_to_menu)
 
     def screen(self):
         self.parent.frame.destroy()
@@ -18,10 +18,7 @@ class Leaderboard():
             tk.Label(self.parent.frame, text=message, background="black",
                     foreground="white", font=('Arial', 24)).place(relx=.5, rely=(.35 + i/20), anchor="c")
 
-        
-
-        button = tk.Button(self.parent.frame, image=self.back_icon)
-        button.place(relx=.5, rely=(.35 + len(players[:10]) / 10), anchor="c")
+        self.back_button().place(relx=.5, rely=(.35 + len(players[:10]) / 10), anchor="c")
 
     def place_button(self):
         self.button.place(relx=.5, rely=.575, anchor="c")

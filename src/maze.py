@@ -69,9 +69,8 @@ class Maze():
                 elif mapping[i][j] == PowerPellet.id:
                     row.append(PowerPellet(j, i, self.graphics))
                 
-                # elif mapping[i][j] == ghosts.Blinky.id:
-                #     row.append(ghosts.Blinky(j, i, self.graphics))
-
+                elif mapping[i][j] == ghosts.Blinky.id:
+                    row.append(ghosts.Blinky(j, i, self.graphics))
                 else:
                     row.append(None)
 
@@ -105,11 +104,13 @@ class Maze():
             for objs in rows:
                 if objs is not None:
                     objects.add(objs)
+                    if type(objs) == Pacman:
+                        self.pacman = objs
         
         self.objects = objects
 
-        while not self.pacman:
-            self.pacman = self.pacman_location()
+        # while not self.pacman:
+        #     self.pacman = self.pacman_location()
 
         self._update_gamestate()
     
@@ -140,24 +141,23 @@ class Maze():
             
             else:
                 self.pacman.boostTime -= 1
+        if self.update_counter % 2 or self.pacman.level > 1:
+            for ghost in self.ghosts:
+                ghost.move(self, self.pacman)
+                self.reset_last_square(ghost)
 
-        # Ghost movement
-        for ghost in self.ghosts:
-            ghost.move(self, self.pacman)
-            self.reset_last_square(ghost)
-
-            if (ghost.y, ghost.x) == (y, x):
-                if not ghost.invulnerable:
-                    self.lose_life_update_game()
+                if (ghost.y, ghost.x) == (y, x):
+                    if not ghost.invulnerable:
+                        self.lose_life_update_game()
+                    else:
+                        self.pacman.collision(ghost)
+                        
                 else:
-                    self.pacman.collision(ghost)
-                    
-            else:
-                self.ghost_restore_last_square(ghost)
-                if type(self.state[ghost.y][ghost.x]) in [Pellet, PowerPellet]:
-                    ghost.pellet = self.state[ghost.y][ghost.x]
-                    
-                self.state[ghost.y][ghost.x] = ghost                         
+                    self.ghost_restore_last_square(ghost)
+                    if type(self.state[ghost.y][ghost.x]) in [Pellet, PowerPellet]:
+                        ghost.pellet = self.state[ghost.y][ghost.x]
+                        
+                    self.state[ghost.y][ghost.x] = ghost                         
         # Other
         if self._validate_upcoming_enemy(x):
             if not self.pacman.invulnerable:
