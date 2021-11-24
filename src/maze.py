@@ -13,6 +13,7 @@ class Maze():
         self.ghosts, self.objects = set(), set()
         self.game_over = False
         self.update_counter = 0
+        self.total_pickups = 0
    
     def new_level(self):
         points, lives, level = self.stats()
@@ -98,7 +99,6 @@ class Maze():
 
     def update_maze(self):
         self.update_counter += 1
-
         objects = set()
         for rows in self.state:
             for objs in rows:
@@ -108,6 +108,11 @@ class Maze():
                         self.pacman = objs
         
         self.objects = objects
+
+        self.total_pickups = {p for p in self.objects if type(p) in [
+                Pellet, PowerPellet]}
+
+        print(self.total_pickups)
 
         # while not self.pacman:
         #     self.pacman = self.pacman_location()
