@@ -76,14 +76,15 @@ class Game():
             button.destroy()
             self.update()
 
-    def exit(self, save = True):
+    def exit(self, gameOver = True):
         self.current.destroy()
         self.points.destroy()
         self.level.destroy()
         self.no_lives.destroy()
 
-        if save:
+        if gameOver:
             self.parent.save_score(self.game.pacman.points)
+            self.parent.user["saved_game"] = []
         self.parent.menu()
 
 
