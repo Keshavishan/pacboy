@@ -1,6 +1,11 @@
+"""
+Options gives the user the ability to customise the keys that control Pacman
+"""
+
 import tkinter as tk
 
-class Options():
+
+class Options:
     def __init__(self, parent):
         self.parent = parent
         icon = parent.graphics.get("options")

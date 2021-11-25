@@ -1,4 +1,9 @@
-class Character():
+"""
+The character class is used as a base for the characters in the game i.e Pacman and the Ghost (Blinky)
+"""
+
+
+class Character:
     def __init__(self, x, y, direction):
         self.x = x
         self.y = y
@@ -16,6 +21,9 @@ class Character():
         return self.y, self.x
 
     def run(self):
+        """
+        Based on the direction the character is facing, run will update the position of the character
+        """
         if self.direction == 'North':
             self.y -= self.speed
 

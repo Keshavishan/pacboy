@@ -1,6 +1,7 @@
 from graphics import Graphics
 
-class Pellet():
+
+class Pellet:
     id = 2
     name = "pellet"
     value = 10

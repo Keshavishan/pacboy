@@ -1,3 +1,8 @@
+"""
+The maze class handles the initialisation and all functionality related to the maze and the movement of objects within
+it
+"""
+
 from powerPellet import PowerPellet
 from pellet import Pellet
 from graphics import Graphics
@@ -177,7 +182,7 @@ class Maze:
             self.state[self.pacman.y][self.pacman.y] = self.pacman
         else:
             self.pacman.collision(self.state[y][x])
-            # Pacman boost
+        # Pacman boost
         if self.pacman.invulnerable:
             if self.pacman.boostTime == self.pacman.defBoostTime:
                 if self.ghost:

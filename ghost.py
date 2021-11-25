@@ -4,6 +4,26 @@ from pacman import Pacman
 from collections import deque as queue
 from wall import Wall
 
+
+def shortest_path(maze, start, target):
+    q = queue([[start]])
+    seen = set([start])
+
+    while q:
+        path = q.popleft()
+        x, y = path[-1]
+
+        if (y, x) == target:
+            return path
+
+        adjacent_squares = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
+
+        for x1, y1 in adjacent_squares:
+            if 0 <= x1 < maze.m_width and 0 <= y1 < maze.m_height and type(maze.state[y1][x1]) != Wall and (x1, y1) not in seen:
+                q.append(path + [(x1, y1)])
+                seen.add((x1, y1))
+
+
 class Ghost(Character):
     id = 4
     name = 'blinky'
@@ -23,7 +43,7 @@ class Ghost(Character):
     def move(self, maze, pacman: Pacman):
         
         target = (self.start[1], self.start[0]) if self.invulnerable else pacman.curr_loc()
-        path = self.shortest_path(maze, (self.x, self.y), target)
+        path = shortest_path(maze, (self.x, self.y), target)
 
         if path:
             if self.invulnerable:
@@ -47,21 +67,3 @@ class Ghost(Character):
                 self.last = self.curr_loc()
                 # print(self.direction)
                 self.run()
-
-    def shortest_path(self, maze, start, target):
-        q = queue([[start]])
-        seen = set([start])
-
-        while q:
-            path = q.popleft()
-            x, y = path[-1]
-
-            if (y, x) == target:
-                return path
-
-            adjacent_squares = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
-
-            for x1, y1 in adjacent_squares:
-                if 0 <= x1 < maze.m_width and 0 <= y1 < maze.m_height and type(maze.state[y1][x1]) != Wall and (x1, y1) not in seen:
-                    q.append(path + [(x1, y1)])
-                    seen.add((x1, y1))

@@ -1,3 +1,7 @@
+"""
+This class creates and handles the updating of Pacman's state including the number of points and lives he has as well as
+what level he's at.
+"""
 from powerPellet import PowerPellet
 from character import Character
 from pellet import Pellet

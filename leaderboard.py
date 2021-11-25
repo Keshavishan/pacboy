@@ -1,3 +1,7 @@
+"""
+The leaderboard class creates the leaderboard for the game.
+"""
+
 import tkinter as tk
 
 

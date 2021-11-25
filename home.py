@@ -1,3 +1,7 @@
+"""
+Home handles the login and menu screen for the game
+"""
+
 import tkinter as tk
 import os
 import pickle

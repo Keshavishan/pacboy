@@ -1,8 +1,12 @@
+"""
+This is the main file that should be run to start the game. The game uses a resolution of 1600 x 900.
+"""
+
 import tkinter as tk
 from home import Home
 
 
-class Window():
+class Window:
     def __init__(self, root: tk.Tk):
         self.root = root
 

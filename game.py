@@ -1,6 +1,8 @@
-import sys
+"""
+The game class handles the running of the game.
+"""
+
 import tkinter as tk
-from tkinter.constants import CENTER
 from powerPellet import PowerPellet
 from pellet import Pellet
 from ghost import Ghost
@@ -8,7 +10,8 @@ from maze import Maze
 from pacman import Pacman
 from wall import Wall
 
-class Game():
+
+class Game:
     def __init__(self, parent):
         self.root = parent.root
         self.width = parent.width
@@ -51,7 +54,8 @@ class Game():
         for obj in self.game.objects:
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1)
-                                              * width, (obj.y * height / height + 1) * height, fill='dark blue', width=0)
+                                              * width, (obj.y * height / height + 1) * height, fill='dark blue',
+                                              width=0)
             elif type(obj) in [Pacman, Pellet, PowerPellet, Ghost]:
                 self.current.create_image(
                     obj.x * width + (width / 2), obj.y * height + (height / 2), image=obj.avatar)
@@ -73,7 +77,7 @@ class Game():
         self.root.after(700, lambda: number('two'))
         self.root.after(1300, lambda: number('one'))
 
-    def check_pause(self, button = None) -> None:
+    def check_pause(self, button=None) -> None:
         if self.pause:
             self.root.after(1, lambda: self.check_pause(button))
         else:
@@ -81,7 +85,7 @@ class Game():
                 button.destroy()
             self.update()
 
-    def exit(self, gameOver = True):
+    def exit(self, gameOver=True):
         self.current.destroy()
         self.points.destroy()
         self.level.destroy()
@@ -91,7 +95,6 @@ class Game():
             self.parent.save_score(self.game.pacman.points)
             self.parent.user["saved_game"] = []
         self.parent.menu()
-
 
     def show_image_screen(self, image):
         self.current.create_image(
@@ -111,9 +114,9 @@ class Game():
     def back(self):
         button = tk.Button(self.current, image=self.graphics.get(
             'back'), command=lambda: self.exit(self.game.game_over))
-        
-        button.place(x=((self.width - button.winfo_reqwidth())/2),
-                     y=self.height/2 + 150)
+
+        button.place(x=((self.width - button.winfo_reqwidth()) / 2),
+                     y=self.height / 2 + 150)
 
         return button
 
@@ -152,7 +155,7 @@ class Game():
 
             if not self.game.game_over:
                 self.refresh_maze()
-    
+
     def return_key_name(self, key):
         if self.options.get(key, False):
             return self.options[key]['name']
@@ -183,7 +186,9 @@ class Game():
 
     def key_bindings(self, enabled):
         keys = [
-            (self.options[option]['key'], self.pause_game if self.options[option]['type'] == "pause" else self.change_direction) for option in self.options]
+            (self.options[option]['key'],
+             self.pause_game if self.options[option]['type'] == "pause" else self.change_direction) for option in
+            self.options]
         self.bind_keys(keys, enabled)
 
     def add_lives(self, event: tk.Event):
@@ -195,16 +200,17 @@ class Game():
         if "send_ghost_to_hut" not in self.used_cheats:
             self.game.ghost.send_to_initial_position = True
             self.used_cheats.append("send_ghost_to_hut")
-    
+
     def unlimited_invincibility(self, event: tk.Event):
         pellets = {p for p in self.game.objects if type(p) in [PowerPellet]}
 
         if not pellets and self.game.pacman.level > 3 and not self.used_invincibility:
             self.game.pacman.invulnerable = True
             self.game.pacman.invincible = True
-    
+
     def cheat_bindings(self, enabled):
-        keys = [("<Control-Shift-L>", self.add_lives), ("<Control-Shift-Alt_L>", self.send_ghost_to_hut),  ("<Control-Shift-I>", self.unlimited_invincibility)]
+        keys = [("<Control-Shift-L>", self.add_lives), ("<Control-Shift-Alt_L>", self.send_ghost_to_hut),
+                ("<Control-Shift-I>", self.unlimited_invincibility)]
         self.bind_keys(keys, enabled)
 
     def bind_keys(self, keys, enabled: bool):

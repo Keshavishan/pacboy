@@ -1,8 +1,13 @@
+"""
+The graphics class imports all assets and saves them in the format required by tkinter so that time isn't wasted
+reading from files multiple times.
+"""
+
 import os
 from tkinter import PhotoImage
 
 
-class Graphics():
+class Graphics:
     def __init__(self):
         loc = os.getcwd()
 
