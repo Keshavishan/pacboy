@@ -72,11 +72,12 @@ class Game():
         self.root.after(700, lambda: number('two'))
         self.root.after(1300, lambda: number('one'))
 
-    def check_pause(self, button: tk.Button) -> None:
+    def check_pause(self, button = None) -> None:
         if self.pause:
             self.root.after(1, lambda: self.check_pause(button))
         else:
-            button.destroy()
+            if button:
+                button.destroy()
             self.update()
 
     def exit(self, gameOver = True):
@@ -117,11 +118,13 @@ class Game():
 
     def update(self):
         if self.pause:
-            self.show_image_screen(
-                'boss' if self.return_key_name(self.interupt) == "Boss Key" else 'paused')
-            button = self.back()
-            self.check_pause(button)
-            pass
+            pause_type = 'boss' if self.return_key_name(self.interupt) == "Boss Key" else 'paused'
+            self.show_image_screen(pause_type)
+            if pause_type != 'boss':
+                button = self.back()
+                self.check_pause(button)
+            else:
+                self.check_pause()
         else:
             self.game.update_directions()
             self.game.update_maze()
@@ -183,17 +186,24 @@ class Game():
         self.bind_keys(keys, enabled)
 
     def add_lives(self, event: tk.Event):
-        if "add_lives" not in self.used_cheats:
+        if "add_lives" not in self.used_cheats and self.game.pacman.level > 2:
             self.game.pacman.lives += 3
             self.used_cheats.append("add_lives")
 
     def send_ghost_to_hut(self, event: tk.Event):
         if "send_ghost_to_hut" not in self.used_cheats:
             self.game.ghost.send_to_initial_position = True
-            self.used_cheats.append("send_ghost_to_hut")    
+            self.used_cheats.append("send_ghost_to_hut")
+    
+    def unlimited_invincibility(self, event: tk.Event):
+        pellets = {p for p in self.game.objects if type(p) in [PowerPellet]}
+
+        if not pellets and self.game.pacman.level > 3:
+            self.game.pacman.invulnerable = True
+            self.game.pacman.invincible = True
     
     def cheat_bindings(self, enabled):
-        keys = [("<Control-Shift-L>", self.add_lives), ("<Control-Shift-Alt_L>", self.send_ghost_to_hut)]
+        keys = [("<Control-Shift-L>", self.add_lives), ("<Control-Shift-Alt_L>", self.send_ghost_to_hut),  ("<Control-Shift-I>", self.unlimited_invincibility)]
         self.bind_keys(keys, enabled)
 
     def bind_keys(self, keys, enabled: bool):

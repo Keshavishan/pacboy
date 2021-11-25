@@ -23,6 +23,8 @@ class Pacman(Character):
         self.boostTime = 45
         self.ghosts_eaten = 0
 
+        self.invincible = False
+
         self.is_respawning = False
         self.death = False
 
@@ -40,9 +42,6 @@ class Pacman(Character):
             self.update_position(27, 14)
         else:
             self.update_position(0, 14)
-
-    def decrease_boost(self):
-        self.boostTime -= 1
 
     def collision(self, collision_with):
         if type(collision_with) == Pellet:

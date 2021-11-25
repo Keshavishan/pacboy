@@ -63,6 +63,5 @@ class Ghost(Character):
 
             for x1, y1 in adjacent_squares:
                 if 0 <= x1 < maze.m_width and 0 <= y1 < maze.m_height and type(maze.state[y1][x1]) != Wall and (x1, y1) not in seen:
-                    print(type(maze.state[y1][x1]))
                     q.append(path + [(x1, y1)])
                     seen.add((x1, y1))

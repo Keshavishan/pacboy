@@ -183,7 +183,8 @@ class Maze:
                 if self.ghost:
                     self.ghost.invulnerable = True
                     self.ghost.set_avatar(self.ghost.name, self.graphics)
-                self.pacman.boostTime -= 1
+                if not self.pacman.invincible:
+                    self.pacman.boostTime -= 1
 
             elif self.pacman.boostTime == 0:
                 if self.ghost:
@@ -193,7 +194,8 @@ class Maze:
                 self.pacman.invulnerable = not self.pacman.invulnerable
 
             else:
-                self.pacman.boostTime -= 1
+                if not self.pacman.invincible:
+                    self.pacman.boostTime -= 1
 
         # Enemy
         if self.ghost:
