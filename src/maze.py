@@ -156,8 +156,7 @@ class Maze():
                 return obj
     
     def _update_gamestate(self):
-        ''' Updates the entire gamestate each time it is called. This function is in charge of
-            all the character object's movement, and game states as the game progresses. '''
+
         y, x = self.pacman.curr_loc()
         # Pacman location
         if (y == 14 and x == 0) or (y == 14 and x == 27):
@@ -182,6 +181,8 @@ class Maze():
             
             else:
                 self.pacman.boostTime -= 1
+
+        #Enemy
         if self.update_counter % 2 or self.pellets_left < 80 + (20 * self.pacman.level) or (self.pacman.level > 3 and self.pacman.lives < 2):
             if self.ghost:
                 self.ghost.move(self, self.pacman)
@@ -192,6 +193,7 @@ class Maze():
                         self.lose_life_update_game()
                     else:
                         self.pacman.collision(self.ghost)
+                        self.ghost_to_initial_position()
                         
                 else:
                     self.ghost_restore_last_square(self.ghost)
@@ -201,7 +203,7 @@ class Maze():
                         self.state[self.ghost.y][self.ghost.x] = self.ghost                         
         # Other
         if self._validate_upcoming_enemy(x):
-            if not self.pacman.invulnerable:
+            if not self.ghost.invulnerable:
                 self.lose_life_update_game()
 
         elif not self.game_over:
@@ -246,13 +248,7 @@ class Maze():
             maze.append(row)
         self.state = maze 
 
-        if self.ghost:
-            self.ghost.x, self.ghost.y = self.ghost.start
-            self.state[self.ghost.y][self.ghost.x] = self.ghost
-
-            if self.ghost.pellet is not None:
-                self.state[self.ghost.last[1]][self.ghost.last[0]] = self.ghost.pellet
-                self.ghost.pellet = None
+        self.ghost_to_initial_position()
 
         self.pacman.x, self.pacman.y = self.pacman.start
         self.pacman.direction = "West"
@@ -261,6 +257,15 @@ class Maze():
 
         self.pacman.set_avatar(self.graphics)
         self.pacman.death = False
+
+    def ghost_to_initial_position(self):
+        if self.ghost:
+            self.ghost.x, self.ghost.y = self.ghost.start
+            self.state[self.ghost.y][self.ghost.x] = self.ghost
+
+            if self.ghost.pellet is not None:
+                self.state[self.ghost.last[1]][self.ghost.last[0]] = self.ghost.pellet
+                self.ghost.pellet = None
 
     def ghost_restore_last_square(self, ghost):
         if ghost.last is not None:

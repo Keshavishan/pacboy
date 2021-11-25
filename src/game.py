@@ -120,10 +120,7 @@ class Game():
             self.game.update_directions()
             self.game.update_maze()
 
-            total_pickups = {p for p in self.game.objects if type(p) in [
-                Pellet, PowerPellet]}
-
-            if len(total_pickups) == 0:
+            if self.game.pellets_left == 0:
                 self.game.pacman.direction = None
                 self.key_bindings(False)
                 self.root.after(750, self.handle_next_level)
