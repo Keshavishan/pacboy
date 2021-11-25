@@ -7,7 +7,7 @@ from leaderboard import Leaderboard
 from options import Options
 
 
-class Home():
+class Home:
     def __init__(self, root: tk.Tk):
         self.root = root
         self.width = 1000
@@ -22,15 +22,13 @@ class Home():
         self.screen = 0
 
         try:
-            dbfile = open(f'{self.loc}/gameplay.pickle', 'rb')
-            self.gameplay = pickle.load(dbfile)
-            dbfile.close()
+            file = open(f'{self.loc}/gameplay.pickle', 'rb')
+            self.gameplay = pickle.load(file)
+            file.close()
         except:
             self.gameplay = {}
 
         self.menu()
-
-        # newlist = 
 
     def save_score(self, score):
         prev_score = self.user["high_score"]
@@ -41,7 +39,7 @@ class Home():
 
     def base_frame(self):
         frame = tk.Frame(self.root, width=self.width,
-                              height=self.height, background="black")
+                         height=self.height, background="black")
         frame.pack(expand=True, fill=tk.BOTH)
 
         pacman_logo = self.graphics.get("pacman")
@@ -65,7 +63,7 @@ class Home():
         elif self.screen == 1:
             self.welcome()
             self.play()
-           
+
             for menu_item in menu_items:
                 menu_item.place_button()
             self.exit()
@@ -142,7 +140,8 @@ class Home():
                  foreground="white").place(relx=.5, rely=.35, anchor="c")
 
         if self.user["high_score"]:
-            tk.Label(self.frame, text=f"Your high score is: {self.user['high_score']}", background="black", foreground="white").place(
+            tk.Label(self.frame, text=f"Your high score is: {self.user['high_score']}", background="black",
+                     foreground="white").place(
                 relx=.5, rely=.4, anchor="c")
 
     def play(self):

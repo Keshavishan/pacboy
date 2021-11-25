@@ -1,5 +1,6 @@
 from graphics import Graphics
 
+
 class PowerPellet():
     id = 3
     name = "powerPellet"

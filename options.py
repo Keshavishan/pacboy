@@ -10,13 +10,13 @@ class Options():
 
     def key(self, pos, name, key):
         label = tk.Label(self.parent.frame, text=name, background="black", foreground="white")
-        input = tk.Entry(self.parent.frame, background="white", fg="black")
-        input.insert(0, key)
+        text_input = tk.Entry(self.parent.frame, background="white", fg="black")
+        text_input.insert(0, key)
 
         label.place(relx=.5, rely=(.25 + pos), anchor="c")
-        input.place(relx=.5, rely=(.3 + pos), anchor="c")
+        text_input.place(relx=.5, rely=(.3 + pos), anchor="c")
 
-        return (name, input)
+        return name, text_input
 
     def save_preferences(self):
         new_options = []

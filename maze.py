@@ -6,7 +6,8 @@ from pacman import Pacman
 from wall import Wall
 from ghost import Ghost
 
-class Maze():
+
+class Maze:
     def __init__(self, graphics: Graphics):
         self.graphics = graphics
         self.m_width, self.m_height, self.state, self.pacman, self.ghost = None, None, None, None, None
@@ -15,59 +16,67 @@ class Maze():
         self.update_counter = 0
         self.pellets_left = 0
         self.cheats = None
-   
-    def new_level(self, saved_game = []):
-        points, lives, curr_level, defBoostTime = self.stats(saved_game)
-        self.game_objects = set()
+
+    def new_level(self, saved_game=[]):
+        points, lives, curr_level, def_boost_time = self.stats(saved_game)
+        self.objects = set()
         self.ghost = None
         self.cheats = None
 
-        mapping = [ listmaker(0, 28), #0
-            ([0] + listmaker(2, 12) + [0]) * 2, #1
-            [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],#2
-            [0, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0],#3
-            [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],#4
-            [0] + listmaker(2, 12) + [3] + listmaker(2, 13) + [0] + [0],#5
-            [0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 0],#6
-            [0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 0],#7
-            [0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0],#8
-            [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, None, 0, 0, None, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],#9
-            [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, None, 0, 0, None, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],#10
-            [0, 0, 0, 0, 0, 0, 2, 0, 0, None, None, None, None, None, None, None, None, None, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],#11
-            [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, 0, 0, 0, 0, None, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],#12
-            [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, None, None, None, None, None, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],#13
-            [None, None, None, None, None, None, 2, None, None, None, 0, None, None, None, None, None, None, 0, None, None, None, 2, None, None, None, None, None, None],#14
-            [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, 4, 5, 6, 7, None, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],#15
-            [None, None, None, None, None, 0, 2, 0, 0, None, 0, 0, 0, 0, 0, 0, 0, 0, None, 0, 0, 2, 0, None, None, None, None],#16
-            [None, None, None, None, None, 0, 2, 0, 0, None, None, None, None, None, None, None, None, None, None, 0, 0, 2, 0, None, None, None, None, None],#17
-            [None, None, None, None, None, 0, 2, 0, 0, None, 0, 0, 0, 0, 0, 0, 0, 0, None, 0, 0, 2, 0, None, None, None, None, None],#18
-            [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, 0, 0, 0, 0, 0, 0, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],#19
-            ([0] + listmaker(2, 12) + [0]) * 2,#20
-            [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],#21
-            [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],#22
-            [0, 3, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, None, 1, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 3, 0, 0],#23
-            [0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0],#24
-            [0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0],#25
-            [0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0],#26
-            [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0],#27
-            [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0],#28
-            [0] + listmaker(2, 13) + [3] + listmaker(2, 12) + [0] + [0],#29
-            listmaker(0, 28)#30
-        ]
+        mapping = [listmaker(0, 28),  # 0
+                   ([0] + listmaker(2, 12) + [0]) * 2,  # 1
+                   [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],  # 2
+                   [0, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0],  # 3
+                   [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],  # 4
+                   [0] + listmaker(2, 12) + [3] + listmaker(2, 13) + [0] + [0],  # 5
+                   [0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 0],  # 6
+                   [0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 0],  # 7
+                   [0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0],  # 8
+                   [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, None, 0, 0, None, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],  # 9
+                   [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, None, 0, 0, None, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],  # 10
+                   [0, 0, 0, 0, 0, 0, 2, 0, 0, None, None, None, None, None, None, None, None, None, None, 0, 0, 2, 0,
+                    0, 0, 0, 0, 0],  # 11
+                   [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, 0, 0, 0, 0, None, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+                   # 12
+                   [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, None, None, None, None, None, 0, None, 0, 0, 2, 0, 0, 0,
+                    0, 0, 0],  # 13
+                   [None, None, None, None, None, None, 2, None, None, None, 0, None, None, None, None, None, None, 0,
+                    None, None, None, 2, None, None, None, None, None, None],  # 14
+                   [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, None, 4, 5, 6, 7, None, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+                   # 15
+                   [None, None, None, None, None, 0, 2, 0, 0, None, 0, 0, 0, 0, 0, 0, 0, 0, None, 0, 0, 2, 0, None,
+                    None, None, None],  # 16
+                   [None, None, None, None, None, 0, 2, 0, 0, None, None, None, None, None, None, None, None, None,
+                    None, 0, 0, 2, 0, None, None, None, None, None],  # 17
+                   [None, None, None, None, None, 0, 2, 0, 0, None, 0, 0, 0, 0, 0, 0, 0, 0, None, 0, 0, 2, 0, None,
+                    None, None, None, None],  # 18
+                   [0, 0, 0, 0, 0, 0, 2, 0, 0, None, 0, 0, 0, 0, 0, 0, 0, 0, None, 0, 0, 2, 0, 0, 0, 0, 0, 0],  # 19
+                   ([0] + listmaker(2, 12) + [0]) * 2,  # 20
+                   [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],  # 21
+                   [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0],  # 22
+                   [0, 3, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, None, 1, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 3, 0, 0],  # 23
+                   [0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0],  # 24
+                   [0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0],  # 25
+                   [0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0],  # 26
+                   [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0],  # 27
+                   [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0],  # 28
+                   [0] + listmaker(2, 13) + [3] + listmaker(2, 12) + [0] + [0],  # 29
+                   listmaker(0, 28)  # 30
+                   ]
 
         overrides = {
             2: {
                 2: [(5, 13)]
             },
             3: {
-                0: [ (29, 7), (29, 8)],
-                2: [(29, 14)]  
+                0: [(29, 7), (29, 8)],
+                2: [(29, 14)]
             },
             4: {
-                0: [ (29, 19), (29, 20) ],
+                0: [(29, 19), (29, 20)],
             },
             5: {
-                0: [ (5, 13), (5, 14)],
+                0: [(5, 13), (5, 14)],
             }
         }
 
@@ -84,31 +93,31 @@ class Maze():
             row = []
             for j in range(len(mapping[i])):
                 if mapping[i][j] == Wall.id:
-                    row.append( Wall(j, i, self.graphics) )
+                    row.append(Wall(j, i, self.graphics))
 
                 elif mapping[i][j] == Pacman.id:
-                    row.append( Pacman(j, i, self.graphics) )
+                    row.append(Pacman(j, i, self.graphics))
 
                 elif mapping[i][j] == Pellet.id:
-                    row.append( Pellet(j, i, self.graphics) )
+                    row.append(Pellet(j, i, self.graphics))
 
                 elif mapping[i][j] == PowerPellet.id:
                     row.append(PowerPellet(j, i, self.graphics))
-                
+
                 elif mapping[i][j] == Ghost.id:
                     row.append(Ghost(j, i, self.graphics))
                 else:
                     row.append(None)
 
             maze.append(row)
-        
+
         self.state = maze
         self.update_maze()
 
         self.pacman = self.get_pacman()
 
         self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, curr_level
-        self.pacman.defBoostTime, self.pacman.boostTime = defBoostTime, defBoostTime
+        self.pacman.defBoostTime, self.pacman.boostTime = def_boost_time, def_boost_time
 
         self.ghost = self.get_ghost()
 
@@ -128,7 +137,7 @@ class Maze():
             if (game_object.y, game_object.x) != game_object.last:
                 previous_y, previous_x = game_object.last
 
-                if type(self.state[previous_y][previous_x]) == None and not self.pacman.is_respawning:
+                if type(self.state[previous_y][previous_x]) is None and not self.pacman.is_respawning:
                     self.state[previous_y][previous_x] = None
 
     def update_maze(self):
@@ -140,14 +149,14 @@ class Maze():
                     objects.add(objs)
                     if type(objs) == Pacman:
                         self.pacman = objs
-        
+
         self.objects = objects
 
         pellets = {p for p in self.objects if type(p) in [Pellet, PowerPellet]}
 
         self.pellets_left = len(pellets)
 
-        self._update_gamestate()
+        self._update_game_state()
 
     def get_pacman(self) -> Pacman:
         for obj in self.objects:
@@ -158,8 +167,8 @@ class Maze():
         for obj in self.objects:
             if type(obj) == Ghost:
                 return obj
-    
-    def _update_gamestate(self):
+
+    def _update_game_state(self):
 
         y, x = self.pacman.curr_loc()
         # Pacman location
@@ -167,8 +176,8 @@ class Maze():
             self.pacman.teleport()
             self.state[self.pacman.y][self.pacman.y] = self.pacman
         else:
-            self.pacman.collision(self.state[y][x])                        
-        # Pacman boost       
+            self.pacman.collision(self.state[y][x])
+            # Pacman boost
         if self.pacman.invulnerable:
             if self.pacman.boostTime == self.pacman.defBoostTime:
                 if self.ghost:
@@ -182,34 +191,35 @@ class Maze():
                     self.ghost.set_avatar(self.ghost.name, self.graphics)
                 self.pacman.boostTime = self.pacman.defBoostTime
                 self.pacman.invulnerable = not self.pacman.invulnerable
-            
+
             else:
                 self.pacman.boostTime -= 1
 
-        #Enemy
+        # Enemy
         if self.ghost:
-            if self.update_counter % 2 or self.pellets_left < 100 + (20 * self.pacman.level) or (self.pacman.level > 3 and self.pacman.lives < 2) or self.ghost.send_to_inital_position:
+            if self.update_counter % 2 or self.pellets_left < 100 + (20 * self.pacman.level) or (
+                    self.pacman.level > 3 and self.pacman.lives < 2) or self.ghost.send_to_initial_position:
                 self.ghost.move(self, self.pacman)
                 self.reset_last_square(self.ghost)
 
-                if self.ghost.send_to_inital_position:
-                    self.ghost.send_to_inital_position = False
+                if self.ghost.send_to_initial_position:
+                    self.ghost.send_to_initial_position = False
                     self.ghost_to_initial_position()
-                
+
                 elif (self.ghost.y, self.ghost.x) == (y, x):
                     if not self.ghost.invulnerable:
                         self.lose_life_update_game()
                     else:
                         self.pacman.collision(self.ghost)
                         self.ghost_to_initial_position()
-                        
+
                 else:
                     self.ghost_restore_last_square(self.ghost)
                     if type(self.state[self.ghost.y][self.ghost.x]) in [Pellet, PowerPellet]:
                         self.ghost.pellet = self.state[self.ghost.y][self.ghost.x]
                     if type(self.state[self.ghost.y][self.ghost.x]) != Wall:
-                        self.state[self.ghost.y][self.ghost.x] = self.ghost                         
-        # Other
+                        self.state[self.ghost.y][self.ghost.x] = self.ghost
+                    # Other
         if self._validate_upcoming_enemy(x):
             if not self.ghost.invulnerable:
                 self.lose_life_update_game()
@@ -224,7 +234,7 @@ class Maze():
     def _validate_upcoming_enemy(self, x) -> bool:
         if x != self.m_width - 1 and x != 0:
             return self._validate_past_enemy()
-    
+
     def _validate_past_enemy(self):
         if self.pacman.last:
             dy, dx = self.pacman.last
@@ -254,7 +264,7 @@ class Maze():
                     row.append(self.state[i][j])
 
             maze.append(row)
-        self.state = maze 
+        self.state = maze
 
         self.ghost_to_initial_position()
 
@@ -284,12 +294,12 @@ class Maze():
                     ghost.pellet = None
                 else:
                     self.state[ghost.last[0]][ghost.last[1]] = None
-    
+
     def can_change_direction(self, direction):
         y, x = self.pacman.curr_loc()
 
         if direction == 'South':
-            return type(self.state[y + 1][x]) != Wall and (y + 1, x) not in [(13,11), (13,16)]
+            return type(self.state[y + 1][x]) != Wall and (y + 1, x) not in [(13, 11), (13, 16)]
 
         elif direction == 'North':
             return type(self.state[y - 1][x]) != Wall

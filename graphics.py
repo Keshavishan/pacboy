@@ -1,5 +1,6 @@
-from tkinter import PhotoImage
 import os
+from tkinter import PhotoImage
+
 
 class Graphics():
     def __init__(self):
@@ -18,4 +19,3 @@ class Graphics():
     def get(self, path) -> PhotoImage:
         return self.graphics[path]
 
-    

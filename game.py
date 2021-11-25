@@ -188,9 +188,9 @@ class Game():
             self.used_cheats.append("add_lives")
 
     def send_ghost_to_hut(self, event: tk.Event):
-        # if "send_ghost_to_hut" not in self.used_cheats:
-        self.game.ghost.send_to_inital_position = True
-        self.used_cheats.append("send_ghost_to_hut")
+        if "send_ghost_to_hut" not in self.used_cheats:
+            self.game.ghost.send_to_initial_position = True
+            self.used_cheats.append("send_ghost_to_hut")    
     
     def cheat_bindings(self, enabled):
         keys = [("<Control-Shift-L>", self.add_lives), ("<Control-Shift-Alt_L>", self.send_ghost_to_hut)]

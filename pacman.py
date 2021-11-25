@@ -4,11 +4,12 @@ from pellet import Pellet
 from graphics import Graphics
 import ghost
 
+
 class Pacman(Character):
     id = 1
     name = "pacman"
 
-    def __init__(self, x, y, graphics: Graphics, direction = 'West'):
+    def __init__(self, x, y, graphics: Graphics, direction='West'):
         Character.__init__(self, x, y, direction)
         self.points = 0
         self.lives = 3
@@ -32,7 +33,7 @@ class Pacman(Character):
         self.direction = direction
 
     def set_avatar(self, graphics: Graphics):
-        self.avatar = graphics.get(f'pacman_{self.direction[0].lower()}' )
+        self.avatar = graphics.get(f'pacman_{self.direction[0].lower()}')
 
     def teleport(self):
         if self.direction == 'West':
@@ -43,11 +44,11 @@ class Pacman(Character):
     def decrease_boost(self):
         self.boostTime -= 1
 
-    def collision(self, collisionWith):
-        if type(collisionWith) == Pellet:
+    def collision(self, collision_with):
+        if type(collision_with) == Pellet:
             # print(Pellet.value * 2 if self.double_points else Pellet.value)
             self.points += Pellet.value * 2 if self.double_points else Pellet.value
-        elif type(collisionWith) == PowerPellet:
+        elif type(collision_with) == PowerPellet:
             self.points += PowerPellet.value * 2 if self.double_points else PowerPellet.value
 
             if not self.invulnerable:
@@ -55,7 +56,7 @@ class Pacman(Character):
             else:
                 self.boostTime = self.boostTime + self.defBoostTime
 
-        elif type(collisionWith) == ghost.Ghost:
+        elif type(collision_with) == ghost.Ghost:
             if self.invulnerable:
                 self.ghosts_eaten += 1
                 self.points += (100 * self.ghosts_eaten)
