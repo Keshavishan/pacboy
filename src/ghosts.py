@@ -7,17 +7,9 @@ from wall import Wall
 class Blinky(Ghost):
     id = 4
     name = 'blinky'
-    target = (26, 2) # x, y
 
     def __init__(self, x, y, graphics: Graphics):
         super().__init__(x, y, Blinky.name, graphics)
-
-    # def move(self, maze, pacman):
-        # if not self.invulnerable:
-            # self.chase(maze, pacman)
-        # else:
-        #     pass
-            # when enemy's can be eaten 
 
     def move(self, maze, pacman: Pacman):
         self.make_move(maze, pacman)
