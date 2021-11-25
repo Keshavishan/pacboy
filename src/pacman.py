@@ -2,7 +2,7 @@ from powerPellet import PowerPellet
 from character import Character
 from pellet import Pellet
 from graphics import Graphics
-import ghosts
+import ghost
 
 class Pacman(Character):
     id = 1
@@ -52,7 +52,7 @@ class Pacman(Character):
             else:
                 self.boostTime = self.boostTime + self.defBoostTime
 
-        elif type(collisionWith) in ghosts.all_ghosts:
+        elif type(collisionWith) in [ghost.Ghost]:
             if not self.invulnerable:
                 self.ghosts_eaten += 1
                 self.points += (100 * self.ghosts_eaten)

@@ -2,12 +2,10 @@ import tkinter as tk
 from tkinter.constants import CENTER
 from powerPellet import PowerPellet
 from pellet import Pellet
-import ghosts
-from graphics import Graphics
+from ghost import Ghost
 from maze import Maze
 from pacman import Pacman
 from wall import Wall
-import pickle
 
 class Game():
     def __init__(self, parent):
@@ -48,7 +46,7 @@ class Game():
             if type(obj) == Wall:
                 self.current.create_rectangle(obj.x * width, obj.y * height, (obj.x * width / width + 1)
                                               * width, (obj.y * height / height + 1) * height, fill='dark blue', width=0)
-            elif type(obj) in [Pacman, Pellet, PowerPellet] + ghosts.all_ghosts:
+            elif type(obj) in [Pacman, Pellet, PowerPellet, Ghost]:
                 self.current.create_image(
                     obj.x * width + (width / 2), obj.y * height + (height / 2), image=obj.avatar)
 

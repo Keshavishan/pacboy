@@ -4,7 +4,7 @@ from graphics import Graphics
 from helper import listmaker
 from pacman import Pacman
 from wall import Wall
-import ghosts
+from ghost import Ghost
 
 class Maze():
     def __init__(self, graphics: Graphics):
@@ -94,8 +94,8 @@ class Maze():
                 elif mapping[i][j] == PowerPellet.id:
                     row.append(PowerPellet(j, i, self.graphics))
                 
-                elif mapping[i][j] == ghosts.Blinky.id:
-                    row.append(ghosts.Blinky(j, i, self.graphics))
+                elif mapping[i][j] == Ghost.id:
+                    row.append(Ghost(j, i, self.graphics))
                 else:
                     row.append(None)
 
@@ -107,7 +107,7 @@ class Maze():
         self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, curr_level
         self.pacman.defBoostTime, self.pacman.boostTime = defBoostTime, defBoostTime
 
-        self.ghosts = { e for e in self.objects if type(e) in ghosts.all_ghosts }
+        self.ghosts = { e for e in self.objects if type(e) in [Ghost] }
 
     def stats(self, saved_game) -> tuple:
         if saved_game:
@@ -207,7 +207,7 @@ class Maze():
     def _validate_past_enemy(self):
         if self.pacman.last:
             dy, dx = self.pacman.last
-            return type(self.state[dy][dx]) in ghosts.all_ghosts
+            return type(self.state[dy][dx]) in [Ghost]
 
     def lose_life_update_game(self):
         self.pacman.lives -= 1
@@ -223,7 +223,7 @@ class Maze():
             for j in range(len(self.state[i])):
                 if type(self.state[i][j]) == Pacman:
                     row.append(None)
-                elif type(self.state[i][j]) in ghosts.all_ghosts:
+                elif type(self.state[i][j]) in [Ghost]:
                     if self.state[i][j].pellet is not None:
                         row.append(self.state[i][j].pellet)
                         self.state[i][j].pellet = None
