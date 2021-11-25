@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 from tkinter.constants import CENTER
 from powerPellet import PowerPellet
@@ -33,6 +34,10 @@ class Game():
 
         self.game = Maze(parent.graphics)
         self.game.new_level(self.parent.user["saved_game"])
+
+        self.cheat_bindings(True)
+
+        self.used_cheats = []
 
     def pause_game(self, event):
         self.pause = not self.pause
@@ -96,6 +101,7 @@ class Game():
 
     def handle_next_level(self):
         self.current.delete(tk.ALL)
+        self.used_cheats = []
         self.show_image_screen("loading")
         self.parent.save_progress(self.game.pacman.lives, self.game.pacman.level, self.game.pacman.points)
         self.root.after(3500, self.to_next_level)
@@ -171,14 +177,26 @@ class Game():
         except AttributeError:
             pass
 
-    def print(self, event: tk.Event):
-        pass
-
-    def key_bindings(self, enabled: bool):
+    def key_bindings(self, enabled):
         keys = [
             (self.options[option]['key'], self.pause_game if self.options[option]['type'] == "pause" else self.change_direction) for option in self.options]
-        keys += [("<Control-r>", self.print)]
+        self.bind_keys(keys, enabled)
 
+    def add_lives(self, event: tk.Event):
+        if "add_lives" not in self.used_cheats:
+            self.game.pacman.lives += 3
+            self.used_cheats.append("add_lives")
+
+    def send_ghost_to_hut(self, event: tk.Event):
+        # if "send_ghost_to_hut" not in self.used_cheats:
+        self.game.ghost.send_to_inital_position = True
+        self.used_cheats.append("send_ghost_to_hut")
+    
+    def cheat_bindings(self, enabled):
+        keys = [("<Control-Shift-L>", self.add_lives), ("<Control-Shift-Alt_L>", self.send_ghost_to_hut)]
+        self.bind_keys(keys, enabled)
+
+    def bind_keys(self, keys, enabled: bool):
         if enabled:
             for key in keys:
                 self.root.bind(key[0], key[1])

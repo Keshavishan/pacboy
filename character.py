@@ -11,7 +11,7 @@ class Character():
 
     def update_position(self, x, y) -> None:
         self.x, self.y = x, y
-    
+
     def curr_loc(self):
         return self.y, self.x
 
@@ -21,9 +21,9 @@ class Character():
 
         elif self.direction == 'East':
             self.x += self.speed
-            
+
         elif self.direction == 'South':
             self.y += self.speed
-            
+
         elif self.direction == 'West':
             self.x -= self.speed

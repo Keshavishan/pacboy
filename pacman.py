@@ -25,6 +25,8 @@ class Pacman(Character):
         self.is_respawning = False
         self.death = False
 
+        self.double_points = False
+
     def change_direction(self, direction):
         self.last_direction = self.direction
         self.direction = direction
@@ -43,17 +45,18 @@ class Pacman(Character):
 
     def collision(self, collisionWith):
         if type(collisionWith) == Pellet:
-            self.points += Pellet.value
+            # print(Pellet.value * 2 if self.double_points else Pellet.value)
+            self.points += Pellet.value * 2 if self.double_points else Pellet.value
         elif type(collisionWith) == PowerPellet:
-            self.points += PowerPellet.value
+            self.points += PowerPellet.value * 2 if self.double_points else PowerPellet.value
 
             if not self.invulnerable:
                 self.invulnerable = not self.invulnerable
             else:
                 self.boostTime = self.boostTime + self.defBoostTime
 
-        elif type(collisionWith) in [ghost.Ghost]:
-            if not self.invulnerable:
+        elif type(collisionWith) == ghost.Ghost:
+            if self.invulnerable:
                 self.ghosts_eaten += 1
                 self.points += (100 * self.ghosts_eaten)
             else:

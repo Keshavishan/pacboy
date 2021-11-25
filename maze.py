@@ -1,4 +1,3 @@
-from typing import Tuple
 from powerPellet import PowerPellet
 from pellet import Pellet
 from graphics import Graphics
@@ -15,11 +14,13 @@ class Maze():
         self.game_over = False
         self.update_counter = 0
         self.pellets_left = 0
+        self.cheats = None
    
     def new_level(self, saved_game = []):
         points, lives, curr_level, defBoostTime = self.stats(saved_game)
         self.game_objects = set()
         self.ghost = None
+        self.cheats = None
 
         mapping = [ listmaker(0, 28), #0
             ([0] + listmaker(2, 12) + [0]) * 2, #1
@@ -111,6 +112,9 @@ class Maze():
 
         self.ghost = self.get_ghost()
 
+    def no_updates(self):
+        return self.update_counter
+
     def stats(self, saved_game) -> tuple:
         if saved_game:
             return saved_game[2], saved_game[0], saved_game[1] + 1, 45 - (5 * saved_game[1])
@@ -124,7 +128,7 @@ class Maze():
             if (game_object.y, game_object.x) != game_object.last:
                 previous_y, previous_x = game_object.last
 
-                if type(self.state[previous_y][previous_x]) == None:
+                if type(self.state[previous_y][previous_x]) == None and not self.pacman.is_respawning:
                     self.state[previous_y][previous_x] = None
 
     def update_maze(self):
@@ -183,12 +187,16 @@ class Maze():
                 self.pacman.boostTime -= 1
 
         #Enemy
-        if self.update_counter % 2 or self.pellets_left < 80 + (20 * self.pacman.level) or (self.pacman.level > 3 and self.pacman.lives < 2):
-            if self.ghost:
+        if self.ghost:
+            if self.update_counter % 2 or self.pellets_left < 100 + (20 * self.pacman.level) or (self.pacman.level > 3 and self.pacman.lives < 2) or self.ghost.send_to_inital_position:
                 self.ghost.move(self, self.pacman)
                 self.reset_last_square(self.ghost)
 
-                if (self.ghost.y, self.ghost.x) == (y, x):
+                if self.ghost.send_to_inital_position:
+                    self.ghost.send_to_inital_position = False
+                    self.ghost_to_initial_position()
+                
+                elif (self.ghost.y, self.ghost.x) == (y, x):
                     if not self.ghost.invulnerable:
                         self.lose_life_update_game()
                     else:
@@ -220,7 +228,7 @@ class Maze():
     def _validate_past_enemy(self):
         if self.pacman.last:
             dy, dx = self.pacman.last
-            return type(self.state[dy][dx]) in [Ghost]
+            return type(self.state[dy][dx]) == Ghost
 
     def lose_life_update_game(self):
         self.pacman.lives -= 1
@@ -257,6 +265,7 @@ class Maze():
 
         self.pacman.set_avatar(self.graphics)
         self.pacman.death = False
+        self.state[self.pacman.y][self.pacman.x] = self.pacman
 
     def ghost_to_initial_position(self):
         if self.ghost:
@@ -264,7 +273,7 @@ class Maze():
             self.state[self.ghost.y][self.ghost.x] = self.ghost
 
             if self.ghost.pellet is not None:
-                self.state[self.ghost.last[1]][self.ghost.last[0]] = self.ghost.pellet
+                self.state[self.ghost.last[0]][self.ghost.last[1]] = self.ghost.pellet
                 self.ghost.pellet = None
 
     def ghost_restore_last_square(self, ghost):

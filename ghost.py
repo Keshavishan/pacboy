@@ -12,6 +12,7 @@ class Ghost(Character):
         Character.__init__(self, x, y, "North")
         self.set_avatar(Ghost.name, graphics)
         self.pellet = None
+        self.send_to_inital_position = False
 
     def set_avatar(self, ghost, graphics: Graphics):
         if self.invulnerable:
@@ -20,13 +21,9 @@ class Ghost(Character):
             self.avatar = graphics.get(ghost)
 
     def move(self, maze, pacman: Pacman):
-        self.make_move(maze, pacman)
-
-    def make_move(self, maze, pacman: Pacman):
-        start = (self.x, self.y)
         
         target = (self.start[1], self.start[0]) if self.invulnerable else pacman.curr_loc()
-        path = self.shortest_path(maze, start, target)
+        path = self.shortest_path(maze, (self.x, self.y), target)
 
         if path:
             if self.invulnerable:

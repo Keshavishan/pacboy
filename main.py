@@ -1,6 +1,7 @@
 import tkinter as tk
 from home import Home
 
+
 class Window():
     def __init__(self, root: tk.Tk):
         self.root = root
@@ -12,6 +13,7 @@ class Window():
 
     def run(self) -> None:
         self.root.mainloop()
+
 
 if __name__ == '__main__':
     root = tk.Tk()
