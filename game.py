@@ -38,6 +38,7 @@ class Game():
         self.cheat_bindings(True)
 
         self.used_cheats = []
+        self.used_invincibility = False
 
     def pause_game(self, event):
         self.pause = not self.pause
@@ -198,7 +199,7 @@ class Game():
     def unlimited_invincibility(self, event: tk.Event):
         pellets = {p for p in self.game.objects if type(p) in [PowerPellet]}
 
-        if not pellets and self.game.pacman.level > 3:
+        if not pellets and self.game.pacman.level > 3 and not self.used_invincibility:
             self.game.pacman.invulnerable = True
             self.game.pacman.invincible = True
     
