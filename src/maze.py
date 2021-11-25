@@ -1,3 +1,4 @@
+from typing import Tuple
 from powerPellet import PowerPellet
 from pellet import Pellet
 from graphics import Graphics
@@ -9,15 +10,16 @@ from ghost import Ghost
 class Maze():
     def __init__(self, graphics: Graphics):
         self.graphics = graphics
-        self.m_width, self.m_height, self.state, self.pacman = None, None, None, None
-        self.ghosts, self.objects = set(), set()
+        self.m_width, self.m_height, self.state, self.pacman, self.ghost = None, None, None, None, None
+        self.objects = set()
         self.game_over = False
         self.update_counter = 0
         self.pellets_left = 0
    
     def new_level(self, saved_game = []):
         points, lives, curr_level, defBoostTime = self.stats(saved_game)
-        self.ghosts, self.game_objects = set(), set()
+        self.game_objects = set()
+        self.ghost = None
 
         mapping = [ listmaker(0, 28), #0
             ([0] + listmaker(2, 12) + [0]) * 2, #1
@@ -74,8 +76,6 @@ class Maze():
                     for position in positions:
                         mapping[position[0]][position[1]] = override
 
-        
-
         self.m_height, self.m_width = len(mapping), len(mapping[0])
         maze = []
 
@@ -104,10 +104,12 @@ class Maze():
         self.state = maze
         self.update_maze()
 
+        self.pacman = self.get_pacman()
+
         self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, curr_level
         self.pacman.defBoostTime, self.pacman.boostTime = defBoostTime, defBoostTime
 
-        self.ghosts = { e for e in self.objects if type(e) in [Ghost] }
+        self.ghost = self.get_ghost()
 
     def stats(self, saved_game) -> tuple:
         if saved_game:
@@ -137,12 +139,21 @@ class Maze():
         
         self.objects = objects
 
-        pellets = {p for p in self.objects if type(p) in [
-                Pellet, PowerPellet]}
+        pellets = {p for p in self.objects if type(p) in [Pellet, PowerPellet]}
 
         self.pellets_left = len(pellets)
 
         self._update_gamestate()
+
+    def get_pacman(self) -> Pacman:
+        for obj in self.objects:
+            if type(obj) == Pacman:
+                return obj
+
+    def get_ghost(self) -> Pacman:
+        for obj in self.objects:
+            if type(obj) == Ghost:
+                return obj
     
     def _update_gamestate(self):
         ''' Updates the entire gamestate each time it is called. This function is in charge of
@@ -157,37 +168,37 @@ class Maze():
         # Pacman boost       
         if self.pacman.invulnerable:
             if self.pacman.boostTime == self.pacman.defBoostTime:
-                for ghost in self.ghosts:
-                    ghost.invulnerable = True
-                    ghost.set_avatar(ghost.name, self.graphics)
+                if self.ghost:
+                    self.ghost.invulnerable = True
+                    self.ghost.set_avatar(self.ghost.name, self.graphics)
                 self.pacman.boostTime -= 1
 
             elif self.pacman.boostTime == 0:
-                for ghost in self.ghosts:
-                    ghost.invulnerable = False
-                    ghost.set_avatar(ghost.name, self.graphics)
+                if self.ghost:
+                    self.ghost.invulnerable = False
+                    self.ghost.set_avatar(self.ghost.name, self.graphics)
                 self.pacman.boostTime = self.pacman.defBoostTime
                 self.pacman.invulnerable = not self.pacman.invulnerable
             
             else:
                 self.pacman.boostTime -= 1
         if self.update_counter % 2 or self.pellets_left < 80 + (20 * self.pacman.level) or (self.pacman.level > 3 and self.pacman.lives < 2):
-            for ghost in self.ghosts:
-                ghost.move(self, self.pacman)
-                self.reset_last_square(ghost)
+            if self.ghost:
+                self.ghost.move(self, self.pacman)
+                self.reset_last_square(self.ghost)
 
-                if (ghost.y, ghost.x) == (y, x):
-                    if not ghost.invulnerable:
+                if (self.ghost.y, self.ghost.x) == (y, x):
+                    if not self.ghost.invulnerable:
                         self.lose_life_update_game()
                     else:
-                        self.pacman.collision(ghost)
+                        self.pacman.collision(self.ghost)
                         
                 else:
-                    self.ghost_restore_last_square(ghost)
-                    if type(self.state[ghost.y][ghost.x]) in [Pellet, PowerPellet]:
-                        ghost.pellet = self.state[ghost.y][ghost.x]
-                    if type(self.state[ghost.y][ghost.x]) != Wall:
-                        self.state[ghost.y][ghost.x] = ghost                         
+                    self.ghost_restore_last_square(self.ghost)
+                    if type(self.state[self.ghost.y][self.ghost.x]) in [Pellet, PowerPellet]:
+                        self.ghost.pellet = self.state[self.ghost.y][self.ghost.x]
+                    if type(self.state[self.ghost.y][self.ghost.x]) != Wall:
+                        self.state[self.ghost.y][self.ghost.x] = self.ghost                         
         # Other
         if self._validate_upcoming_enemy(x):
             if not self.pacman.invulnerable:
@@ -235,13 +246,13 @@ class Maze():
             maze.append(row)
         self.state = maze 
 
-        for ghost in self.ghosts:
-            ghost.x, ghost.y = ghost.start
-            self.state[ghost.y][ghost.x] = ghost
+        if self.ghost:
+            self.ghost.x, self.ghost.y = self.ghost.start
+            self.state[self.ghost.y][self.ghost.x] = self.ghost
 
-            if ghost.pellet is not None:
-                self.state[ghost.last[1]][ghost.last[0]] = ghost.pellet
-                ghost.pellet = None
+            if self.ghost.pellet is not None:
+                self.state[self.ghost.last[1]][self.ghost.last[0]] = self.ghost.pellet
+                self.ghost.pellet = None
 
         self.pacman.x, self.pacman.y = self.pacman.start
         self.pacman.direction = "West"
@@ -259,11 +270,6 @@ class Maze():
                     ghost.pellet = None
                 else:
                     self.state[ghost.last[0]][ghost.last[1]] = None
-
-    def pacman_location(self) -> Pacman:
-        for obj in self.objects:
-            if type(obj) == Pacman:
-                return obj
     
     def can_change_direction(self, direction):
         y, x = self.pacman.curr_loc()
