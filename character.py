@@ -15,9 +15,15 @@ class Character:
         self.avatar = None
 
     def update_position(self, x, y) -> None:
+        """
+        Updates the position of the character in the maze
+        """
         self.x, self.y = x, y
 
     def curr_loc(self):
+        """
+        Returns the current location of the character
+        """
         return self.y, self.x
 
     def run(self):

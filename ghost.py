@@ -6,8 +6,11 @@ from wall import Wall
 
 
 def shortest_path(maze, start, target):
+    """
+    Calculates the shortest path to the target location using breadth-first-search algorithm
+    """
     q = queue([[start]])
-    seen = set([start])
+    seen = {start}
 
     while q:
         path = q.popleft()
@@ -19,7 +22,8 @@ def shortest_path(maze, start, target):
         adjacent_squares = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
 
         for x1, y1 in adjacent_squares:
-            if 0 <= x1 < maze.m_width and 0 <= y1 < maze.m_height and type(maze.state[y1][x1]) != Wall and (x1, y1) not in seen:
+            if 0 <= x1 < maze.m_width and 0 <= y1 < maze.m_height and type(maze.state[y1][x1]) != Wall and (x1, y1) \
+                    not in seen:
                 q.append(path + [(x1, y1)])
                 seen.add((x1, y1))
 
@@ -28,9 +32,11 @@ class Ghost(Character):
     id = 4
     name = 'blinky'
 
-    def __init__(self, x, y, graphics: Graphics, saved_game={}):
+    def __init__(self, x, y, graphics: Graphics, saved_game=None):
         Character.__init__(self, x, y, "North")
-        
+
+        if saved_game is None:
+            saved_game = {}
         self.pellet = None
         self.send_to_initial_position = False
 
@@ -46,6 +52,10 @@ class Ghost(Character):
             self.avatar = graphics.get(ghost)
 
     def move(self, maze, pacman: Pacman):
+        """
+        This function calls the shortest path function calculate the shortest path to the target location. It then moves
+         the ghost by calculating the
+        """
         
         target = (self.start[1], self.start[0]) if self.invulnerable else pacman.curr_loc()
         path = shortest_path(maze, (self.x, self.y), target)

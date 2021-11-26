@@ -13,6 +13,7 @@ from wall import Wall
 
 class Game:
     def __init__(self, parent):
+        # Base variables taken from the parent
         self.root = parent.root
         self.width = parent.width
         self.height = parent.height
@@ -21,6 +22,7 @@ class Game:
         self.current = tk.Canvas(parent.root, width=parent.width, height=parent.height, background="black")
         self.current.grid(row=0, column=0, sticky=tk.N)
 
+        # Labels for the stats bar
         def label(): return tk.Label(parent.root, text='0', font=('Arial', 18))
 
         self.points, self.level, self.no_lives = label(), label(), label()
@@ -29,12 +31,14 @@ class Game:
         self.level.grid(row=1, column=0, sticky=tk.N)
         self.no_lives.grid(row=1, column=0, sticky=tk.E)
 
+        # Preference set by the user
         self.options = {option['key']: option for option in self.parent.user["options"]}
 
         self.key_bindings(True)
         self.pause = False
         self.interupt = None
 
+        # Initialise game and new level
         self.game = Maze(parent.graphics)
 
         self.game.new_level(self.parent.user["saved_game"])
@@ -45,10 +49,16 @@ class Game:
         self.used_invincibility = False
 
     def pause_game(self, event):
+        """
+        Pause/Unpauses the game by setting the pause flag and sets what key was used to trigger the pause
+        """
         self.pause = not self.pause
         self.interupt = event.keysym
 
     def draw_maze(self) -> None:
+        """
+        Creating the actual maze
+        """
         height = self.height / self.game.m_height
         width = self.width / self.game.m_width
 
@@ -62,6 +72,9 @@ class Game:
                     obj.x * width + (width / 2), obj.y * height + (height / 2), image=obj.avatar)
 
     def refresh_maze(self):
+        """
+        Used when the whole canvas needs to be redrawn e.g. when the countdown is running, when pacman is respawning
+        """
         self.current.delete(tk.ALL)
         self.draw_maze()
         self.no_lives['text'] = f'Lives: {self.game.pacman.lives}'
@@ -69,6 +82,9 @@ class Game:
         self.points['text'] = f'Points: {self.game.pacman.points}'
 
     def countdown(self):
+        """
+        Controls the countdown to the game starting/restarting
+        """
         def number(image):
             self.refresh_maze()
             self.current.create_image(self.width / 2, self.height / 2,
@@ -79,6 +95,9 @@ class Game:
         self.root.after(1300, lambda: number('one'))
 
     def check_pause(self, button=None) -> None:
+        """
+        Controls the pausing and un-pausing of the game based on the pause flag
+        """
         if self.pause:
             self.root.after(1, lambda: self.check_pause(button))
         else:
@@ -87,6 +106,9 @@ class Game:
             self.update()
 
     def exit(self, gameOver=True):
+        """
+        Returns player to the main menu and sets/resets configuration based how the exit was triggered
+        """
         self.current.destroy()
         self.points.destroy()
         self.level.destroy()
@@ -122,6 +144,9 @@ class Game:
         self.root.after(3500, self.to_next_level)
 
     def back(self):
+        """
+        Inserts the back button into the game
+        """
         button = tk.Button(self.current, image=self.graphics.get(
             'back'), command=lambda: self.exit(self.game.game_over))
 
@@ -131,6 +156,9 @@ class Game:
         return button
 
     def update(self):
+        """
+        Master function that updates the whole game state based on trigger events
+        """
         if self.pause:
             pause_type = 'boss' if self.return_key_name(self.interupt) == "Boss Key" else 'paused'
             self.show_image_screen(pause_type)
@@ -202,16 +230,25 @@ class Game:
         self.bind_keys(keys, enabled)
 
     def add_lives(self, event: tk.Event):
+        """
+        Cheat 1: activates after level 2. Gives the player three extra lives and con only be used once per level.
+        """
         if "add_lives" not in self.used_cheats and self.game.pacman.level > 2:
             self.game.pacman.lives += 3
             self.used_cheats.append("add_lives")
 
     def send_ghost_to_hut(self, event: tk.Event):
+        """
+        Cheat 2: Sends the ghost back to the ghost hut.
+        """
         if "send_ghost_to_hut" not in self.used_cheats:
             self.game.ghost.send_to_initial_position = True
             self.used_cheats.append("send_ghost_to_hut")
 
     def unlimited_invincibility(self, event: tk.Event):
+        """
+        Cheat 3: activates after level 3. Gives the player invincibility once all power pellets have been eaten.
+        """
         pellets = {p for p in self.game.objects if type(p) in [PowerPellet]}
 
         if not pellets and self.game.pacman.level > 3 and not self.used_invincibility:

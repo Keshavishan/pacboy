@@ -22,7 +22,12 @@ class Maze:
         self.pellets_left = 0
         self.cheats = None
 
-    def new_level(self, saved_game={}):
+    def new_level(self, saved_game=None):
+        """
+        Initialises a new level
+        """
+        if saved_game is None:
+            saved_game = {}
         points, lives, curr_level, def_boost_time = self.stats()
         self.objects = set()
         self.ghost = None
@@ -71,7 +76,7 @@ class Maze:
 
         overrides = {
             2: {
-                2: [(5, 13),(29, 14)]
+                2: [(5, 13), (29, 14)]
             },
             3: {
                 0: [(29, 7), (29, 8)]
@@ -143,6 +148,9 @@ class Maze:
             return 0, 3, 1, 45
 
     def reset_last_square(self, game_object):
+        """
+        After the character has moved to a new square, replaces the previous tile with None.
+        """
         if game_object.last is not None:
             if (game_object.y, game_object.x) != game_object.last:
                 previous_y, previous_x = game_object.last
@@ -187,7 +195,7 @@ class Maze:
             self.state[self.pacman.y][self.pacman.y] = self.pacman
         else:
             self.pacman.collision(self.state[y][x])
-        
+
         # Pacman boost
         if self.pacman.invulnerable:
             if self.pacman.boostTime == self.pacman.defBoostTime:
@@ -250,7 +258,6 @@ class Maze:
                 dy, dx = self.pacman.last
                 return type(self.state[dy][dx]) == Ghost
         
-
     def lose_life_update_game(self):
         self.pacman.lives -= 1
         if self.pacman.lives:

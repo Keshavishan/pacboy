@@ -16,6 +16,9 @@ class Leaderboard:
                                              command=self.parent.return_to_menu)
 
     def screen(self):
+        """
+        Displays the top 10 players with their respective scores in descending
+        """
         self.parent.frame.destroy()
         self.parent.base_frame()
         players = sorted(self.parent.gameplay.values(), key=lambda d: d['high_score'], reverse=True)
