@@ -161,27 +161,28 @@ class Maze:
 
         self.pellets_left = len(pellets)
 
-        self._update_game_state()
+        self.update_game_state()
 
     def get_pacman(self) -> Pacman:
         for obj in self.objects:
             if type(obj) == Pacman:
                 return obj
 
-    def get_ghost(self) -> Pacman:
+    def get_ghost(self) -> Ghost:
         for obj in self.objects:
             if type(obj) == Ghost:
                 return obj
 
-    def _update_game_state(self):
-
+    def update_game_state(self):
         y, x = self.pacman.curr_loc()
+
         # Pacman location
         if (y == 14 and x == 0) or (y == 14 and x == 27):
             self.pacman.teleport()
             self.state[self.pacman.y][self.pacman.y] = self.pacman
         else:
             self.pacman.collision(self.state[y][x])
+        
         # Pacman boost
         if self.pacman.invulnerable:
             if self.pacman.boostTime == self.pacman.defBoostTime:
@@ -226,8 +227,8 @@ class Maze:
                         self.ghost.pellet = self.state[self.ghost.y][self.ghost.x]
                     if type(self.state[self.ghost.y][self.ghost.x]) != Wall:
                         self.state[self.ghost.y][self.ghost.x] = self.ghost
-                    # Other
-        if self._validate_upcoming_enemy(x):
+
+        if self.ghost_incoming(x):
             if not self.ghost.invulnerable:
                 self.lose_life_update_game()
 
@@ -238,14 +239,12 @@ class Maze:
         else:
             self.state[y][x] = None
 
-    def _validate_upcoming_enemy(self, x) -> bool:
+    def ghost_incoming(self, x) -> bool:
         if x != self.m_width - 1 and x != 0:
-            return self._validate_past_enemy()
-
-    def _validate_past_enemy(self):
-        if self.pacman.last:
-            dy, dx = self.pacman.last
-            return type(self.state[dy][dx]) == Ghost
+            if self.pacman.last:
+                dy, dx = self.pacman.last
+                return type(self.state[dy][dx]) == Ghost
+        
 
     def lose_life_update_game(self):
         self.pacman.lives -= 1
