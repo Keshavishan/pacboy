@@ -23,9 +23,9 @@ class Leaderboard:
         for i, player in enumerate(players[:10]):
             message = f"{i + 1}. {player['name']} - {player['high_score']}"
             tk.Label(self.parent.frame, text=message, background="black",
-                     foreground="white", font=('Arial', 24)).place(relx=.5, rely=(.35 + i / 20), anchor="c")
+                     foreground="white", font=('Arial', 24)).place(relx=.5, rely=(.3 + i / 20), anchor="c")
 
-        self.back_button().place(relx=.5, rely=(.35 + len(players[:10]) / 10), anchor="c")
+        self.back_button().place(relx=.5, rely=.85, anchor="c")
 
     def place_button(self):
         self.button.place(relx=.5, rely=.575, anchor="c")
