@@ -22,8 +22,8 @@ class Maze:
         self.pellets_left = 0
         self.cheats = None
 
-    def new_level(self, saved_game=[]):
-        points, lives, curr_level, def_boost_time = self.stats(saved_game)
+    def new_level(self, saved_game={}):
+        points, lives, curr_level, def_boost_time = self.stats()
         self.objects = set()
         self.ghost = None
         self.cheats = None
@@ -71,17 +71,16 @@ class Maze:
 
         overrides = {
             2: {
-                2: [(5, 13)]
+                2: [(5, 13),(29, 14)]
             },
             3: {
-                0: [(29, 7), (29, 8)],
-                2: [(29, 14)]
+                0: [(29, 7), (29, 8)]
             },
             4: {
-                0: [(29, 19), (29, 20)],
+                0: [(29, 19), (29, 20)]
             },
             5: {
-                0: [(5, 13), (5, 14)],
+                0: [(5, 13), (5, 14)]
             }
         }
 
@@ -93,24 +92,32 @@ class Maze:
 
         self.m_height, self.m_width = len(mapping), len(mapping[0])
         maze = []
-
+        
         for i in range(len(mapping)):
             row = []
             for j in range(len(mapping[i])):
                 if mapping[i][j] == Wall.id:
                     row.append(Wall(j, i, self.graphics))
-
                 elif mapping[i][j] == Pacman.id:
-                    row.append(Pacman(j, i, self.graphics))
+                    row.append(Pacman(j, i, self.graphics, saved_game=saved_game["pacman"] if saved_game else {}))
 
+                elif mapping[i][j] == Ghost.id:
+                    row.append(Ghost(j, i, self.graphics, saved_game=saved_game["ghost"] if saved_game else {}))
+                
+                elif saved_game:
+                    if mapping[i][j] == Pellet.id and (i, j) in saved_game["pellet_positions"]:
+                        row.append(Pellet(j, i, self.graphics))
+
+                    elif mapping[i][j] == PowerPellet.id and (i, j) in saved_game["pellet_positions"]:
+                        row.append(PowerPellet(j, i, self.graphics))
+                    else:
+                        row.append(None)
                 elif mapping[i][j] == Pellet.id:
                     row.append(Pellet(j, i, self.graphics))
 
                 elif mapping[i][j] == PowerPellet.id:
                     row.append(PowerPellet(j, i, self.graphics))
 
-                elif mapping[i][j] == Ghost.id:
-                    row.append(Ghost(j, i, self.graphics))
                 else:
                     row.append(None)
 
@@ -120,19 +127,17 @@ class Maze:
         self.update_maze()
 
         self.pacman = self.get_pacman()
-
-        self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, curr_level
-        self.pacman.defBoostTime, self.pacman.boostTime = def_boost_time, def_boost_time
+        if not saved_game:
+            self.pacman.points, self.pacman.lives, self.pacman.level = points, lives, curr_level
+            self.pacman.defBoostTime, self.pacman.boostTime = def_boost_time, def_boost_time
 
         self.ghost = self.get_ghost()
 
     def no_updates(self):
         return self.update_counter
 
-    def stats(self, saved_game) -> tuple:
-        if saved_game:
-            return saved_game[2], saved_game[0], saved_game[1] + 1, 45 - (5 * saved_game[1])
-        elif self.state is not None:
+    def stats(self) -> tuple:
+        if self.state is not None:
             return self.pacman.points, self.pacman.lives, self.pacman.level + 1, 45 - (5 * self.pacman.level)
         else:
             return 0, 3, 1, 45

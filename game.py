@@ -36,6 +36,7 @@ class Game:
         self.interupt = None
 
         self.game = Maze(parent.graphics)
+
         self.game.new_level(self.parent.user["saved_game"])
 
         self.cheat_bindings(True)
@@ -91,9 +92,18 @@ class Game:
         self.level.destroy()
         self.no_lives.destroy()
 
+        pellet_positions = {(p.y, p.x) for p in self.game.objects if type(p) in [Pellet, PowerPellet]}
+        pacman = self.game.pacman.__dict__
+        pacman.pop("avatar")
+        pacman.pop("graphics")
+        ghost = self.game.ghost.__dict__
+        ghost.pop("avatar")
+
         if gameOver:
             self.parent.save_score(self.game.pacman.points)
-            self.parent.user["saved_game"] = []
+            self.parent.user["saved_game"] = {}
+        else:
+            self.parent.save_progress(pacman, ghost, pellet_positions)
         self.parent.menu()
 
     def show_image_screen(self, image):

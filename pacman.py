@@ -13,14 +13,14 @@ class Pacman(Character):
     id = 1
     name = "pacman"
 
-    def __init__(self, x, y, graphics: Graphics, direction='West'):
+    def __init__(self, x, y, graphics: Graphics, saved_game={}, direction='West'):
         Character.__init__(self, x, y, direction)
         self.points = 0
         self.lives = 3
         self.level = 1
 
         self.graphics = graphics
-        self.set_avatar(graphics)
+        
 
         self.last_direction, self.next_direction = 'West', None
         self.defBoostTime = 45
@@ -33,6 +33,12 @@ class Pacman(Character):
         self.death = False
 
         self.double_points = False
+
+        for key in saved_game:
+            setattr(self, key, saved_game[key])
+        
+        self.set_avatar(graphics)
+
 
     def change_direction(self, direction):
         self.last_direction = self.direction
@@ -49,7 +55,6 @@ class Pacman(Character):
 
     def collision(self, collision_with):
         if type(collision_with) == Pellet:
-            # print(Pellet.value * 2 if self.double_points else Pellet.value)
             self.points += Pellet.value * 2 if self.double_points else Pellet.value
         elif type(collision_with) == PowerPellet:
             self.points += PowerPellet.value * 2 if self.double_points else PowerPellet.value

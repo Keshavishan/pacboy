@@ -28,11 +28,16 @@ class Ghost(Character):
     id = 4
     name = 'blinky'
 
-    def __init__(self, x, y, graphics: Graphics):
+    def __init__(self, x, y, graphics: Graphics, saved_game={}):
         Character.__init__(self, x, y, "North")
-        self.set_avatar(Ghost.name, graphics)
+        
         self.pellet = None
         self.send_to_initial_position = False
+
+        for key in saved_game:
+            setattr(self, key, saved_game[key])
+
+        self.set_avatar(Ghost.name, graphics)
 
     def set_avatar(self, ghost, graphics: Graphics):
         if self.invulnerable:
@@ -65,5 +70,5 @@ class Ghost(Character):
                     self.direction = 'West'
 
                 self.last = self.curr_loc()
-                # print(self.direction)
+
                 self.run()
