@@ -145,7 +145,7 @@ class Maze:
         if self.state is not None:
             return self.pacman.points, self.pacman.lives, self.pacman.level + 1, 45 - (5 * self.pacman.level)
         else:
-            return 0, 3, 1, 45
+            return 0, 3, 4, 45
 
     def reset_last_square(self, game_object):
         """

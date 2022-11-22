@@ -56,7 +56,7 @@ class Home:
                          height=self.height, background="black")
         frame.pack(expand=True, fill=tk.BOTH)
 
-        pacman_logo = self.graphics.get("pacman")
+        pacman_logo = self.graphics.get("Pacman")
         label = tk.Label(frame, image=pacman_logo,
                          background="black", borderwidth=0, bd=0)
         label.place(relx=.5, rely=.15, anchor="c")
